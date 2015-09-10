@@ -2,7 +2,6 @@ module RooftopRubyClient
   module Post
     def self.included(base)
       base.include RooftopRubyClient::Base
-      base.include RooftopRubyClient::AuthorCoercion
       base.extend ClassMethods
       base.send(:collection_path,"posts")
     end
