@@ -1,10 +1,10 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'rooftop_ruby_client/version'
+require 'rooftop-ruby-client/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "rooftop_ruby_client"
+  spec.name          = "rooftop-ruby-client"
   spec.version       = RooftopRubyClient::VERSION
   spec.authors       = ["Ed Jones"]
   spec.email         = ["ed@errorstudio.co.uk"]
