@@ -4,12 +4,12 @@ require_rel '.'
 
 require "active_support/all"
 
-module RooftopClient
+module Rooftop
   class << self
     #accessor to set the preview API for use instead of the production one
     attr_accessor :use_preview_api
 
-    #access the configuration class as RooftopClient.configuration
+    #access the configuration class as Rooftop.configuration
     attr_accessor :configuration
 
     #block for configuration.
@@ -38,12 +38,12 @@ module RooftopClient
 
     def configure_connection
       if @url.nil?
-        raise ArgumentError, "You need to configure RooftopClient before instantiating a class with a RooftopClient mixin"
+        raise ArgumentError, "You need to configure Rooftop before instantiating a class with a Rooftop mixin"
       end
 
       @connection.setup url: @url do |c|
         #Headers
-        c.use RooftopClient::Headers
+        c.use Rooftop::Headers
 
         # Request
         c.use Faraday::Request::UrlEncoded

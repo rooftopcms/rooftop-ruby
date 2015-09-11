@@ -1,8 +1,8 @@
-module RooftopRubyClient
+module RooftopClient
   module Page
     def self.included(base)
-      base.include RooftopRubyClient::Base
-      base.include RooftopRubyClient::AuthorCoercion
+      base.include RooftopClient::Base
+      base.include RooftopClient::AuthorCoercion
       base.extend ClassMethods
       base.send(:collection_path,"pages")
     end

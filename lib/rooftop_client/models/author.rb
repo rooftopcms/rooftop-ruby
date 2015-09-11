@@ -1,4 +1,4 @@
-module RooftopRubyClient
+module RooftopClient
   class Author
     def initialize(args)
       args.each do |k,v|

@@ -1,13 +1,13 @@
-module RooftopRubyClient
+module RooftopClient
   module Client
     def self.included(base)
-      if RooftopRubyClient.configuration.url.nil?
-        raise ArgumentError, "You need to configure RooftopRubyClient before instantiating a class with a RooftopRubyClient mixin"
+      if RooftopClient.configuration.url.nil?
+        raise ArgumentError, "You need to configure RooftopClient before instantiating a class with a RooftopClient mixin"
       end
 
-      Her::API.setup url: RooftopRubyClient.configuration.url do |c|
+      Her::API.setup url: RooftopClient.configuration.url do |c|
         #Headers
-        c.use RooftopRubyClient::Headers
+        c.use RooftopClient::Headers
 
         # Request
         c.use Faraday::Request::UrlEncoded

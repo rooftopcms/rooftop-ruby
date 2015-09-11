@@ -1,7 +1,7 @@
-module RooftopRubyClient
+module RooftopClient
   module Post
     def self.included(base)
-      base.include RooftopRubyClient::Base
+      base.include RooftopClient::Base
       base.extend ClassMethods
       base.send(:collection_path,"posts")
     end

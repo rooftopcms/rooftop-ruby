@@ -1,16 +1,16 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'rooftop-ruby-client/version'
+require 'rooftop_client/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "rooftop-ruby-client"
-  spec.version       = RooftopRubyClient::VERSION
+  spec.name          = "rooftop_client"
+  spec.version       = RooftopClient::VERSION
   spec.authors       = ["Ed Jones"]
   spec.email         = ["ed@errorstudio.co.uk"]
-  spec.summary       = "An ActiveRecord-like interface to the Wordpress JSON API"
-  spec.description   = "An ActiveRecord-like interface to the Wordpress JSON API"
-  spec.homepage      = ""
+  spec.summary       = "An ActiveRecord-like interface to the Rooftop JSON API"
+  spec.description   = "An ActiveRecord-like interface to the Rooftop JSON API"
+  spec.homepage      = "http://www.rooftop.com"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")

@@ -1,4 +1,4 @@
-module RooftopRubyClient
+module RooftopClient
   module Coercions
     def self.included(base)
       base.extend ClassMethods

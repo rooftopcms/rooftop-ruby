@@ -1,13 +1,13 @@
-# RooftopRubyClient
+# RooftopClient
 A mixin for Ruby classes to access the Wordpress REST API (http://wp-api.org)
 
 # Setup
 
 ## Configuration
-You need to configure RooftopRubyClient with a block, like this
+You need to configure RooftopClient with a block, like this
 
 ```
-    RooftopRubyClient.configure do |config|
+    RooftopClient.configure do |config|
         config.url = "http://your.rooftop-cms.site/wp-json"
     end
 ```
@@ -15,20 +15,20 @@ You need to configure RooftopRubyClient with a block, like this
 # Use
 Create a class and use one of the mixins to get the data.
 
-## RooftopRubyClient::Post
-The RooftopRubyClient::Post mixin lets you specify a post type, so the API differentiates between types.
+## RooftopClient::Post
+The RooftopClient::Post mixin lets you specify a post type, so the API differentiates between types.
 
 ```
 class MyCustomPostType
-    include RooftopRubyClient::Post
+    include RooftopClient::Post
     self.post_type = "my_custom_post_type" #this is the post type name in Wordpress
 end
 ```
-## RooftopRubyClient::Page
-The RooftopRubyClient::Page mixin identifies this class as a page.
+## RooftopClient::Page
+The RooftopClient::Page mixin identifies this class as a page.
 ```
 class Page
-    include RooftopRubyClient::Page
+    include RooftopClient::Page
 end
 ```
 
@@ -39,7 +39,7 @@ To coerce one or more fields, call a class method in your class and pass a lambd
 
 ```
 class MyCustomPostType
-    include RooftopRubyClient::Post
+    include RooftopClient::Post
     self.post_type = "my_custom_post_type"
     coerce_field date: ->(date) { DateTime.parse(date)}
 ```
@@ -47,7 +47,7 @@ class MyCustomPostType
 There are some coercions done manually.
 
 ### Author
-When an object is returned from the API, the Author information is automatically parsed into a RooftopRubyClient::Author object.
+When an object is returned from the API, the Author information is automatically parsed into a RooftopClient::Author object.
 
 ### Date
 Created date is coerced to a DateTime. It's also aliased to created_at
@@ -62,7 +62,7 @@ Lots! Here's a flavour:
 * Authentication: there are a couple of ways of doing this, but the simplest would be a quick WP plugin to generate a per-user API key which we pass in the header.
 * Preview: once authentication is solved, we need to be able to show posts in draft
 * Media: media is exposed by the API. Don't know if this explicitly needs supporting by the API or just accessible
-* Allowing other classes to be exposed: mixing in RooftopRubyClient::Client *should* allow a custom class to hit the right endpoint, but it's work-in-progress
+* Allowing other classes to be exposed: mixing in RooftopClient::Client *should* allow a custom class to hit the right endpoint, but it's work-in-progress
 
 
 
