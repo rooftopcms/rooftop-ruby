@@ -9,7 +9,7 @@ module RooftopClient
       # Use the API instance we have configured - in a proc because we can't control load order
       base.send(:use_api,->{RooftopClient.configuration.connection})
       # WP returns an uppercase attribute for ID. Annoying.
-      base.send(:primary_key, :"ID")
+      # base.send(:primary_key, :"ID")
       # Date and Modified fields are pretty universal in responses from WP, so we can automatically
       # coerce these to DateTime.
       base.send(:coerce_field,date: ->(date) {DateTime.parse(date)})

@@ -15,8 +15,12 @@ module RooftopClient
         # @param args [Hash] as hash of field => search options
         # @return [Array] of selected records
         def find_by(args)
-          all.to_a.select do |record|
+          matches = all.to_a.select do |record|
             args.all? { |k,v| record.send(k) == v}
+          end
+
+          matches.collect do |match|
+            self.send(:find,match.id)
           end
         end
       end
