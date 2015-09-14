@@ -8,12 +8,17 @@ module RooftopClient
 
     module ClassMethods
       def resolve_parent_id(id)
-        if id == 0
-          #no parent
-          nil
+        if id.is_a?(Fixnum)
+          if id == 0
+            #no parent
+            return nil
+          else
+            return self.send(:find, id)
+          end
         else
-          self.send(:find, id)
+          return id
         end
+
       end
     end
   end
