@@ -8,6 +8,7 @@ module RooftopClient
       RooftopClient.configuration.extra_headers.each do |key,value|
         env[:request_headers][key.to_s] = value
       end
+      env[:request_headers]["User-Agent"] = RooftopClient.configuration.user_agent
       @app.call(env)
     end
   end

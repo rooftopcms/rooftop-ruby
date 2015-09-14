@@ -22,12 +22,13 @@ module RooftopClient
   end
 
   class Configuration
-    attr_accessor :api_token, :url, :extra_headers
+    attr_accessor :api_token, :url, :extra_headers, :user_agent
     attr_reader :connection
 
     def initialize
-      @extra_headers ||= []
+      @extra_headers ||= {}
       @connection ||= Her::API.new
+      @user_agent = "Rooftop Ruby Client #{RooftopClient::VERSION} (http://github.com/rooftopcms)"
     end
 
     # Return the Configuration object as a hash, with symbols as keys.
