@@ -37,7 +37,7 @@ module RooftopClient
     end
 
     def configure_connection
-      if @url.nil?
+      if @url.nil? || @api_token.nil?
         raise ArgumentError, "You need to configure RooftopClient before instantiating a class with a RooftopClient mixin"
       end
 
