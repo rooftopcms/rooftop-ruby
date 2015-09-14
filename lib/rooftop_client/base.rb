@@ -2,9 +2,9 @@ module RooftopClient
   module Base
     def self.included(base)
       base.include Her::Model
-      # Coercions allow you to pass a block to do someting with a returned field
+      # Coercions allow you to pass a block to do something with a returned field
       base.include RooftopClient::Coercions
-      # Include queries
+      # Queries mixin includes a fixup for there `where()` method
       base.include RooftopClient::Queries
       # Use the API instance we have configured - in a proc because we can't control load order
       base.send(:use_api,->{RooftopClient.configuration.connection})
