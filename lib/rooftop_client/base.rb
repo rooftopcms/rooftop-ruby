@@ -2,9 +2,12 @@ module RooftopClient
   module Base
     def self.included(base)
       base.include Her::Model
+      # Coercions allow you to pass a block to do someting with a returned field
+      base.include RooftopClient::Coercions
+      # Include queries
+      base.include RooftopClient::Queries
       # Use the API instance we have configured - in a proc because we can't control load order
       base.send(:use_api,->{RooftopClient.configuration.connection})
-      base.include RooftopClient::Coercions
       # WP returns an uppercase attribute for ID. Annoying.
       base.send(:primary_key, :"ID")
       # Date and Modified fields are pretty universal in responses from WP, so we can automatically
