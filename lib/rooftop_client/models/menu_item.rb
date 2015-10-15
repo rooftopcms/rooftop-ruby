@@ -1,4 +1,4 @@
-module RooftopClient
+module Rooftop
   class MenuItem
     def initialize(args)
       args.each do |k,v|

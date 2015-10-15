@@ -22,12 +22,40 @@ module Rooftop
   end
 
   class Configuration
-    attr_accessor :api_token, :url, :extra_headers
-    attr_reader :connection
+    attr_accessor :api_token, :url, :site_name
+    attr_reader :connection,
+                :connection_path,
+                :api_path, #actually writeable with custom setter
+                :extra_headers, #actually writeable with custom setter
+                :advanced_options, #actually writeable with custom setter
+                :user_agent #actually writeable with custom setter
 
     def initialize
-      @extra_headers ||= []
+      @extra_headers = []
       @connection ||= Her::API.new
+      @advanced_options = {}
+      @api_path = "/wp-json/wp/v2/"
+      @user_agent = "Rooftop CMS Ruby client #{Rooftop::VERSION} (http://github.com/rooftopcms/rooftop-ruby)"
+    end
+
+    def api_path=(path)
+      @api_path = path || @api_path
+    end
+
+    def user_agent=(agent)
+      @user_agent = agent || @user_agent
+    end
+
+    def extra_headers=(headers)
+      @extra_headers = headers || @extra_headers
+    end
+
+    def advanced_options=(opts)
+      @advanced_options = opts || @advanced_options
+    end
+
+    def user_agent=(agent)
+      @user_agent = agent || @user_agent
     end
 
     # Return the Configuration object as a hash, with symbols as keys.
@@ -37,11 +65,13 @@ module Rooftop
     end
 
     def configure_connection
-      if @url.nil?
+      if @api_token.nil? || @url.nil?
         raise ArgumentError, "You need to configure Rooftop before instantiating a class with a Rooftop mixin"
       end
 
-      @connection.setup url: @url do |c|
+      @connection_path = "#{@url}#{@api_path}"
+
+      @connection.setup url: @connection_path do |c|
         #Headers
         c.use Rooftop::Headers
 

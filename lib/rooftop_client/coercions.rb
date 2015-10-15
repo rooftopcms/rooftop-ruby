@@ -1,4 +1,4 @@
-module RooftopClient
+module Rooftop
   module Coercions
     def self.included(base)
       base.extend ClassMethods

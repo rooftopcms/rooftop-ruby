@@ -1,6 +1,6 @@
-module RooftopClient
+module Rooftop
   class MediaItem
-    include RooftopClient::Base
+    include Rooftop::Base
     collection_path "media"
   end
 end

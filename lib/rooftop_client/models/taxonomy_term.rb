@@ -1,6 +1,6 @@
-module RooftopClient
+module Rooftop
   class TaxonomyTerm
-    include RooftopClient::Base
+    include Rooftop::Base
     primary_key "ID"
   end
 end

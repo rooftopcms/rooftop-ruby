@@ -1,4 +1,4 @@
-module RooftopClient
+module Rooftop
   module Queries
     def self.included(base)
       base.extend ClassMethods

@@ -1,8 +1,8 @@
-module RooftopClient
+module Rooftop
   class Taxonomy
-    include RooftopClient::Base
+    include Rooftop::Base
     collection_path "taxonomies"
     primary_key "slug"
-    has_many :terms, class_name: "RooftopClient::TaxonomyTerm"
+    has_many :terms, class_name: "Rooftop::TaxonomyTerm"
   end
 end

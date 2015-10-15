@@ -1,4 +1,4 @@
-module RooftopClient
+module Rooftop
   class Author
     def initialize(args)
       args.each do |k,v|
