@@ -1,5 +1,5 @@
 # Rooftop
-A mixin for Ruby classes to access the Wordpress REST API (http://wp-api.org)
+A mixin for Ruby classes to access the Rooftop REST API (http://wp-api.org)
 
 # Setup
 
@@ -43,8 +43,6 @@ class MyCustomPostType
     self.post_type = "my_custom_post_type"
     coerce_field date: ->(date) { DateTime.parse(date)}
 ```
-
-There are some coercions done manually.
 
 ### Author
 When an object is returned from the API, the Author information is automatically parsed into a Rooftop::Author object.
