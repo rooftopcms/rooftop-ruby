@@ -1,5 +1,5 @@
 # Rooftop
-A mixin for Ruby classes to access the Rooftop REST API (http://wp-api.org)
+A mixin for Ruby classes to access the Rooftop CMS REST API: http://www.rooftopcms.com
 
 # Setup
 
@@ -8,12 +8,19 @@ You need to configure Rooftop with a block, like this
 
 ```
     Rooftop.configure do |config|
-        config.url = "http://your.rooftop-cms.site/wp-json"
+        config.url = "http://yoursite.rooftopcms.io"
+        config.api_token = "your token"
+        config.api_path = "/wp-json/wp/v2/"
+        config.user_agent = "Rooftop CMS Ruby client #{Rooftop::VERSION} (http://github.com/rooftopcms/rooftop-ruby)"
+        config.extra_headers = {custom_header: "foo", another_custom_header: "bar"}
+        config.advanced_options = {} #for future use
     end
 ```
 
+The minimum options you need to include are `url`, `api_token`, and `api_path`. `api_path` can be blank / nil if you specify the whole path in the `url` parameter.
+
 # Use
-Create a class and use one of the mixins to get the data.
+Create a class in your application, and mix in some (or all) of the rooftop modules to interact with your remote content.
 
 ## Rooftop::Post
 The Rooftop::Post mixin lets you specify a post type, so the API differentiates between types.
@@ -44,23 +51,32 @@ class MyCustomPostType
     coerce_field date: ->(date) { DateTime.parse(date)}
 ```
 
-### Author
-When an object is returned from the API, the Author information is automatically parsed into a Rooftop::Author object.
+### Object dates are coerced automatically
+The created date field is coerced to a DateTime. It's also aliased to `created_at`
 
-### Date
-Created date is coerced to a DateTime. It's also aliased to created_at
+The modification date is also coerced to a DateTime. It's also aliased to `updated_at`
 
-### Modified
-The modification date is coerced to a DateTime. It's also aliased to updated_at
-
-# To do
+# Roadmap
+## Reading data
 Lots! Here's a flavour:
 
-* Taxonomies need to be supported (http://wp-api.org/#taxonomies_retrieve-all-taxonomies)
-* Authentication: there are a couple of ways of doing this, but the simplest would be a quick WP plugin to generate a per-user API key which we pass in the header.
-* Preview: once authentication is solved, we need to be able to show posts in draft
-* Media: media is exposed by the API. Don't know if this explicitly needs supporting by the API or just accessible
-* Allowing other classes to be exposed: mixing in Rooftop::Client *should* allow a custom class to hit the right endpoint, but it's work-in-progress
+* Taxonomies will be supported and side-loaded against content
+* Hypermedia links need to resolve to the right place. At the moment calling `.links` on an object returns a Rooftop::ResourceLinks::Collection which is a good start. 
+* Media: media is exposed by the API, and should be accessible and downloadable.
+
+## Writing Data
+If your API user in Rooftop has permission to write data, the API will allow it, and so should this gem. At the moment all the code is theoretically in place but untested.
+
+# Contributing
+Rooftop and its libraries are open-source and we'd love your input.
+
+1 Fork the repo on github
+2 Make whatever changes / extensions you think would be useful
+3 If you've got lots of commits, rebase them into sensible squashed chunks
+4 Raise a PR on the project
+
+If you have a real desire to get involved, we're looking for maintainers. [mailto:hello@rooftopcms.com](Let us know!).
+
 
 # Licence
 Rooftop Ruby is a library to allow you to connect to Rooftop CMS, the API-first WordPress CMS for developers and content creators.
