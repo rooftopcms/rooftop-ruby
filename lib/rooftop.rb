@@ -31,7 +31,7 @@ module Rooftop
                 :user_agent #actually writeable with custom setter
 
     def initialize
-      @extra_headers = []
+      @extra_headers = {}
       @connection ||= Her::API.new
       @advanced_options = {}
       @api_path = "/wp-json/wp/v2/"
