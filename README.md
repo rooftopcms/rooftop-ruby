@@ -61,6 +61,7 @@ The modification date is also coerced to a DateTime. It's also aliased to `updat
 Lots! Here's a flavour:
 
 * Taxonomies will be supported and side-loaded against content
+* Menus are exposed by Rooftop. We need to create a Rooftop::Menu mixin
 * Hypermedia links need to resolve to the right place. At the moment calling `.links` on an object returns a Rooftop::ResourceLinks::Collection which is a good start. 
 * Media: media is exposed by the API, and should be accessible and downloadable.
 
@@ -70,10 +71,10 @@ If your API user in Rooftop has permission to write data, the API will allow it,
 # Contributing
 Rooftop and its libraries are open-source and we'd love your input.
 
-1 Fork the repo on github
-2 Make whatever changes / extensions you think would be useful
-3 If you've got lots of commits, rebase them into sensible squashed chunks
-4 Raise a PR on the project
+1. Fork the repo on github
+2.  Make whatever changes / extensions you think would be useful
+3. If you've got lots of commits, rebase them into sensible squashed chunks
+4. Raise a PR on the project
 
 If you have a real desire to get involved, we're looking for maintainers. [mailto:hello@rooftopcms.com](Let us know!).
 
