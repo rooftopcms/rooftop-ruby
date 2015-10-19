@@ -3,6 +3,24 @@ A mixin for Ruby classes to access the Rooftop CMS REST API: http://www.rooftopc
 
 # Setup
 
+## Installation
+
+You can either install using [Bundler](http://bundler.io) or just from the command line.
+
+### Bundler
+Include this in your gemfile
+
+`gem 'rooftop'`
+
+That's it! This is in active development so you might prefer:
+
+`gem 'rooftop', github: "rooftop/rooftop-ruby"`
+ 
+### Using Gem
+As simple as:
+
+`gem install rooftop`
+
 ## Configuration
 You need to configure Rooftop with a block, like this
 
