@@ -41,12 +41,12 @@ The minimum options you need to include are `url` and `api_token`.
 Create a class in your application, and mix in some (or all) of the rooftop modules to interact with your remote content.
 
 ## Rooftop::Post
-The Rooftop::Post mixin lets you specify a post type, so the API differentiates between types.
+The Rooftop::Post mixin lets you specify a post type, so the API differentiates between types. If you don't set a post type, it defaults to posts.
 
 ```
 class MyCustomPostType
     include Rooftop::Post
-    self.post_type = "my_custom_post_type" #this is the post type name in Wordpress
+    self.post_type = "my_custom_post_type" #this is the singular post type name in Wordpress
 end
 ```
 ## Rooftop::Page
@@ -67,6 +67,8 @@ class MyCustomPostType
     include Rooftop::Post
     self.post_type = "my_custom_post_type"
     coerce_field date: ->(date) { DateTime.parse(date)}
+end
+    
 ```
 
 ### Object dates are coerced automatically
