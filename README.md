@@ -35,18 +35,18 @@ You need to configure Rooftop with a block, like this
     end
 ```
 
-The minimum options you need to include are `url`, `api_token`, and `api_path`. `api_path` can be blank / nil if you specify the whole path in the `url` parameter.
+The minimum options you need to include are `url` and `api_token`.
 
 # Use
 Create a class in your application, and mix in some (or all) of the rooftop modules to interact with your remote content.
 
 ## Rooftop::Post
-The Rooftop::Post mixin lets you specify a post type, so the API differentiates between types.
+The Rooftop::Post mixin lets you specify a post type, so the API differentiates between types. If you don't set a post type, it defaults to posts.
 
 ```
 class MyCustomPostType
     include Rooftop::Post
-    self.post_type = "my_custom_post_type" #this is the post type name in Wordpress
+    self.post_type = "my_custom_post_type" #this is the singular post type name in Wordpress
 end
 ```
 ## Rooftop::Page
@@ -67,6 +67,8 @@ class MyCustomPostType
     include Rooftop::Post
     self.post_type = "my_custom_post_type"
     coerce_field date: ->(date) { DateTime.parse(date)}
+end
+    
 ```
 
 ### Object dates are coerced automatically
@@ -78,6 +80,7 @@ The modification date is also coerced to a DateTime. It's also aliased to `updat
 ## Reading data
 Lots! Here's a flavour:
 
+* Preview mode. Rooftop supports passing a preview header to see content in draft. We'll expose that in the rooftop gem as a constant.
 * Taxonomies will be supported and side-loaded against content
 * Menus are exposed by Rooftop. We need to create a Rooftop::Menu mixin
 * Hypermedia links need to resolve to the right place. At the moment calling `.links` on an object returns a Rooftop::ResourceLinks::Collection which is a good start. 
@@ -94,7 +97,7 @@ Rooftop and its libraries are open-source and we'd love your input.
 3. If you've got lots of commits, rebase them into sensible squashed chunks
 4. Raise a PR on the project
 
-If you have a real desire to get involved, we're looking for maintainers. [mailto:hello@rooftopcms.com](Let us know!).
+If you have a real desire to get involved, we're looking for maintainers. [Let us know!](mailto: hello@rooftopcms.com).
 
 
 # Licence
