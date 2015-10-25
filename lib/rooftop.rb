@@ -1,4 +1,5 @@
 require 'her'
+require 'faraday-http-cache'
 require 'require_all'
 require_rel '.'
 
@@ -22,7 +23,7 @@ module Rooftop
   end
 
   class Configuration
-    attr_accessor :api_token, :url, :site_name
+    attr_accessor :api_token, :url, :site_name, :perform_caching, @cache_store
     attr_reader :connection,
                 :connection_path,
                 :api_path, #actually writeable with custom setter
@@ -36,6 +37,8 @@ module Rooftop
       @advanced_options = {}
       @api_path = "/wp-json/wp/v2/"
       @user_agent = "Rooftop CMS Ruby client #{Rooftop::VERSION} (http://github.com/rooftopcms/rooftop-ruby)"
+      @perform_caching = false
+      @cache_store = ActiveSupport::Cache.lookup_store(:memory_store)
     end
 
     def api_path=(path)
@@ -75,8 +78,16 @@ module Rooftop
         #Headers
         c.use Rooftop::Headers
 
+        # Caching
+        if @perform_caching
+          c.use Faraday::HttpCache, store: @cache_store
+        end
+
+
+
         # Request
         c.use Faraday::Request::UrlEncoded
+
 
         # Response
         c.use Her::Middleware::DefaultParseJSON

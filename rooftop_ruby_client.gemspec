@@ -24,5 +24,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency "activesupport"
   spec.add_dependency "require_all"
   spec.add_dependency "her"
+  spec.add_dependency "faraday-http-cache"
 
 end
