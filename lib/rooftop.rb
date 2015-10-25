@@ -23,7 +23,7 @@ module Rooftop
   end
 
   class Configuration
-    attr_accessor :api_token, :url, :site_name, :perform_caching, @cache_store
+    attr_accessor :api_token, :url, :site_name, :perform_caching, :cache_store, :cache_logger
     attr_reader :connection,
                 :connection_path,
                 :api_path, #actually writeable with custom setter
@@ -39,6 +39,7 @@ module Rooftop
       @user_agent = "Rooftop CMS Ruby client #{Rooftop::VERSION} (http://github.com/rooftopcms/rooftop-ruby)"
       @perform_caching = false
       @cache_store = ActiveSupport::Cache.lookup_store(:memory_store)
+      @cache_logger = nil
     end
 
     def api_path=(path)
@@ -80,10 +81,8 @@ module Rooftop
 
         # Caching
         if @perform_caching
-          c.use Faraday::HttpCache, store: @cache_store
+          c.use Faraday::HttpCache, store: @cache_store, serializer: Marshal, logger: @cache_logger
         end
-
-
 
         # Request
         c.use Faraday::Request::UrlEncoded
