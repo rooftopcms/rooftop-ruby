@@ -152,7 +152,7 @@ Lots! Here's a flavour:
 * Media: media is exposed by the API, and should be accessible and downloadable.
 
 ## Writing Data
-If your API user in Rooftop has permission to write data, the API will allow it, and so should this gem. At the moment all the code is theoretically in place but untested. It would be great to have (issues raised)[https://github.com/rooftopcms/rooftop-ruby/issues] about writing back to the API.
+If your API user in Rooftop has permission to write data, the API will allow it, and so should this gem. At the moment all the code is theoretically in place but untested. It would be great to have [issues raised](https://github.com/rooftopcms/rooftop-ruby/issues) about writing back to the API.
 
 # Contributing
 Rooftop and its libraries are open-source and we'd love your input.
