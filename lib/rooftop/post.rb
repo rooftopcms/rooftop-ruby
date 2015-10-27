@@ -2,6 +2,7 @@ module Rooftop
   module Post
     def self.included(base)
       base.include Rooftop::Base
+      base.include Rooftop::Nested
       base.extend ClassMethods
       base.send(:collection_path, "posts")
     end
