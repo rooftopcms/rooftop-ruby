@@ -76,18 +76,74 @@ The created date field is coerced to a DateTime. It's also aliased to `created_a
 
 The modification date is also coerced to a DateTime. It's also aliased to `updated_at`
 
+## Field aliases
+Sometimes you might want to alias field names - for example, `date` is aliased to `created_at` to make it more rubyish. `modified` is also `updated_at`.
+ 
+Creating alises and coercing them is order-sensitive. If you need to both coerce a field *and* alias it, do the coercion first. Otherwise you'll find the aliased field isn't coerced.
+
+(We don't just called `alias_method` on the original field because the object methods are dynamically generated from the returned data)
+
+```
+class MyCustomPostType
+    include Rooftop::Post
+    self.post_type = "my_custom_post_type"
+    coerce_field some_date: ->(date) { DateTime.parse(date)}
+    alias_field some_date: :another_name_for_some_date
+end
+```
+
+## Resource Links
+* Resource Links are a work-in-progress*
+
+The WordPress API uses the concept of Hypermedia Links (see http://v2.wp-api.org/extending/linking/ for more info). We parse the `_links` field in the response and build a Rooftop::ResourceLinks::Collection (which is a subclass of `Array`). The individual links are instances of Rooftop::ResourceLinks::Link.
+
+The reason for these classes is because we can do useful stuff with them, for example call `.resolve()` on a link to get an instance of the class to which it refers.
+
+### Custom Link Relations
+According to the WordPress API docs (and IANA link relation convention) you need a custom name for link relations which don't fall into a [small subset of names](http://www.iana.org/assignments/link-relations/link-relations.xhtml). For those aren't in this list, we're prefixing the relation names with http://docs.rooftopcms.com/link_relations, which will resolve to some documentation.
+
+### Nested Resource Links
+Rooftop uses the custom link relations to return a list of ancestors and children (not all descendants) in `_links`. Rooftop::Post and Rooftop::Page include Rooftop::Nested, which has some utility methods to access them.
+ 
+```
+class Page
+    include Rooftop::Page
+end
+
+p = Page.first
+p.ancestors #returns a collection of Rooftop::ResourceLinks::Link items where `link_type` is "http://docs.rooftopcms.com/link_relations/ancestors"
+p.children #returns a collection of Rooftop::ResourceLinks::Link items where `link_type` is "http://docs.rooftopcms.com/link_relations/children"
+p.parent #returns the parent entity
+```
+
+## SSL / TLS
+Hosted Rooftop from rooftopcms.io exclusively uses SSL/TLS. You need to configure the Rooftop library to use SSL.
+ 
+This library uses the excellent [Her REST Client](https://github.com/remiprev/her) which in turn uses [Faraday](https://github.com/lostisland/faraday/) for http requests. The [Faraday SSL docs](https://github.com/lostisland/faraday/wiki/Setting-up-SSL-certificates) are pretty complete, and the SSL options are exposed straight through this library:
+
+```
+Rooftop.configure do |config|
+    # other config options
+    config.ssl_options = {
+        #your ssl options in here.
+    }
+    # other config options
+end
+```
+
+Leaving `config.ssl_options` unset allows you to work without HTTPS.
+
 # Roadmap
 ## Reading data
 Lots! Here's a flavour:
 
 * Preview mode. Rooftop supports passing a preview header to see content in draft. We'll expose that in the rooftop gem as a constant.
 * Taxonomies will be supported and side-loaded against content
-* Menus are exposed by Rooftop. We need to create a Rooftop::Menu mixin
-* Hypermedia links need to resolve to the right place. At the moment calling `.links` on an object returns a Rooftop::ResourceLinks::Collection which is a good start. 
+* Menus are exposed by Rooftop. We need to create a Rooftop::Menu mixin 
 * Media: media is exposed by the API, and should be accessible and downloadable.
 
 ## Writing Data
-If your API user in Rooftop has permission to write data, the API will allow it, and so should this gem. At the moment all the code is theoretically in place but untested.
+If your API user in Rooftop has permission to write data, the API will allow it, and so should this gem. At the moment all the code is theoretically in place but untested. It would be great to have (issues raised)[https://github.com/rooftopcms/rooftop-ruby/issues] about writing back to the API.
 
 # Contributing
 Rooftop and its libraries are open-source and we'd love your input.
