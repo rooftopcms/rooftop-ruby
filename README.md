@@ -133,6 +133,15 @@ end
 
 Leaving `config.ssl_options` unset allows you to work without HTTPS.
 
+## Caching
+While hosted Rooftop is cached at source and delivered through a CDN, caching locally is a smart idea. The Rooftop library uses the [faraday-http-cache](https://github.com/plataformatec/faraday-http-cache) to intelligently cache responses from the API. Rooftop updates etags when entities are updated so caches shouldn't be stale.
+
+_(The cache headers plugin for Rooftop is a work in progress)_
+ 
+ If you want to cache responses, set `perform_caching` to true in your configuration block. You will need to provide a cache store and logger in the `cache_store` and `cache_logger` config options. By default, the cache store is set to `ActiveSupport::Cache.lookup_store(:memory_store)` which is a sensible default, but isn't shared across threads. Any ActiveSupport-compatible cache store (Memcache, file, Redis etc.) will do.
+   
+ The `cache_logger` option determines where cache debug messages (hits, misses etc.) get stored. By default it's `nil`, which switches logging off.
+
 # Roadmap
 ## Reading data
 Lots! Here's a flavour:
