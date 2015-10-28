@@ -19,6 +19,17 @@ module Rooftop
         #Call the Her `where` method with our new filters
         super().where(filters)
       end
+
+      alias_method :find_by, :where
+
+      def find_by!(args)
+        results = find_by(args)
+        if results.present?
+          results
+        else
+          raise Rooftop::RecordNotFound
+        end
+      end
     end
   end
 end
