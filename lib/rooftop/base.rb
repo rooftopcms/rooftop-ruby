@@ -13,6 +13,9 @@ module Rooftop
       # Use the API instance we have configured - in a proc because we can't control load order
       base.send(:use_api,->{Rooftop.configuration.connection})
 
+      # Turn calls to `content` into a collection of Rooftop::ContentField objects
+      base.include Rooftop::Content
+
       # Date and Modified fields are pretty universal in responses from WP, so we can automatically
       # coerce these to DateTime.
       base.send(:coerce_field,date: ->(date) {DateTime.parse(date)})
