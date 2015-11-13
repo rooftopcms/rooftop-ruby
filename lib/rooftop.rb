@@ -23,7 +23,7 @@ module Rooftop
   end
 
   class Configuration
-    attr_accessor :api_token, :url, :site_name, :perform_caching, :cache_store, :cache_logger, :ssl_options
+    attr_accessor :api_token, :url, :site_name, :perform_caching, :cache_store, :cache_logger, :ssl_options, :proxy
     attr_reader :connection,
                 :connection_path,
                 :api_path, #actually writeable with custom setter
@@ -41,6 +41,7 @@ module Rooftop
       @cache_store = ActiveSupport::Cache.lookup_store(:memory_store)
       @cache_logger = nil
       @ssl_options = {}
+      @proxy = nil
     end
 
     def api_path=(path)
@@ -76,7 +77,7 @@ module Rooftop
 
       @connection_path = "#{@url}#{@api_path}"
 
-      @connection.setup url: @connection_path, ssl: @ssl_options do |c|
+      @connection.setup url: @connection_path, ssl: @ssl_options, proxy: @proxy do |c|
         #Headers
         c.use Rooftop::Headers
 

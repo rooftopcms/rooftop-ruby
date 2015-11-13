@@ -2,7 +2,7 @@ module Rooftop
   class Headers < Faraday::Middleware
     def call(env)
       unless Rooftop.configuration.api_token.nil?
-        env[:request_headers]["API-TOKEN"] = Rooftop.configuration.api_token
+        env[:request_headers]["Api-Token"] = Rooftop.configuration.api_token
       end
 
       Rooftop.configuration.extra_headers.each do |key,value|
