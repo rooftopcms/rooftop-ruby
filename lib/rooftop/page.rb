@@ -4,10 +4,10 @@ module Rooftop
       base.include Rooftop::Base
       base.include Rooftop::Nested
       base.extend ClassMethods
-      base.send(:collection_path,"pages")
     end
 
     module ClassMethods
+
 
     end
 

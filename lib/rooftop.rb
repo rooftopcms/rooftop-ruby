@@ -1,11 +1,13 @@
 require 'her'
 require 'faraday-http-cache'
 require 'require_all'
-require_rel '.'
-
 require "active_support/all"
 
 module Rooftop
+
+  DEFAULT_API_NAMESPACE = "wp"
+  DEFAULT_API_VERSION = 2
+
   class << self
     #accessor to set the preview API for use instead of the production one
     attr_accessor :use_preview_api
@@ -35,7 +37,7 @@ module Rooftop
       @extra_headers = {}
       @connection ||= Her::API.new
       @advanced_options = {}
-      @api_path = "/wp-json/wp/v2/"
+      @api_path = "/wp-json/"
       @user_agent = "Rooftop CMS Ruby client #{Rooftop::VERSION} (http://github.com/rooftopcms/rooftop-ruby)"
       @perform_caching = false
       @cache_store = ActiveSupport::Cache.lookup_store(:memory_store)
@@ -99,3 +101,6 @@ module Rooftop
     end
   end
 end
+
+#load everything after this.
+require_rel '.'

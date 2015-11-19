@@ -4,12 +4,11 @@ module Rooftop
       base.include Rooftop::Base
       base.include Rooftop::Nested
       base.extend ClassMethods
-      base.send(:collection_path, "posts")
     end
 
     module ClassMethods
       def post_type=(type)
-        self.send(:collection_path,type.humanize.pluralize.underscore.gsub(" ","_"))
+        self.api_endpoint = type.pluralize
       end
     end
   end

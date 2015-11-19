@@ -1,7 +1,14 @@
 module Rooftop
   module Base
     def self.included(base)
+      base.extend ClassMethods
       base.include Her::Model
+
+      # Paths to get to the API
+      base.api_namespace = Rooftop::DEFAULT_API_NAMESPACE
+      base.api_version = Rooftop::DEFAULT_API_VERSION
+      base.setup_path!
+
       # Coercions allow you to pass a block to do something with a returned field
       base.include Rooftop::Coercions
       # Aliases allow you to specify a field (or fields) to alias
@@ -25,17 +32,42 @@ module Rooftop
       base.send(:alias_field, date: :created_at)
       base.send(:alias_field, modified: :updated_at)
 
-      base.extend ClassMethods
-
       # Set up the hooks identified in other mixins. This method is defined in Rooftop::HookCalls
       base.send(:"setup_hooks!")
+
     end
 
     module ClassMethods
+      attr_reader :api_namespace, :api_version, :api_endpoint
+
+      def api_namespace=(ns)
+        @api_namespace = ns
+        setup_path!
+      end
+
+      def api_version=(v)
+        @api_version = v
+        setup_path!
+      end
+
+      def api_endpoint=(e)
+        @api_endpoint = e
+        setup_path!
+      end
+
+      def setup_path!
+        @api_endpoint ||= collection_path
+        self.collection_path "#{@api_namespace}/v#{@api_version}/#{@api_endpoint}"
+      end
+
       # Allow calling 'first'
       def first
         all.first
       end
+
+
+
+
     end
 
   end
