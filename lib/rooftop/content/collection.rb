@@ -26,7 +26,7 @@ module Rooftop
       def method_missing(method, *args, &block)
         fields = named(method)
         if fields.length > 0
-          fields.first
+          fields.first.value
         else
           raise Rooftop::Content::FieldNotFoundError, "No field named #{method} was found"
         end
