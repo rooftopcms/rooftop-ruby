@@ -1,3 +1,6 @@
 module Rooftop
-  class RecordNotFound < StandardError; end
+  class RecordNotFound < NoMethodError; end
+  module Content
+    class FieldNotFound < NoMethodError; end
+  end
 end

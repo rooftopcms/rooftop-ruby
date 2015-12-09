@@ -16,8 +16,26 @@ module Rooftop
       end
 
       def named(name)
-        find_by(name: name.to_s).first
+        find_by(name: name.to_s)
       end
+
+      def method_missing(method, *args, &block)
+        fields = named(method)
+        if fields.length > 0
+          fields.first
+        else
+          raise Rooftop::Content::FieldNotFoundError, "No field named #{method} was found on #{self.class}"
+        end
+      end
+
+      def respond_to_missing?(method, private=false)
+        if named(method).length == 0
+          super
+        else
+          true
+        end
+      end
+
     end
   end
 end

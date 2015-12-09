@@ -137,6 +137,28 @@ p.parent #returns the parent entity
 ## Handling Content Fields
 Rooftop can return a variable number of content fields depending on what you've configured in advanced custom fields.
 
+The raw data is available in your object at `.content`:
+
+```
+p = Page.first
+p.content #returns a hash of content data
+```
+But that's not super-helpful, so the gem generates a collection for you.
+
+```
+p = Page.first
+p.fields #a Rooftop::Content::Collection, containing Rooftop::Content::Field entries.
+```
+
+You can access a particular piece of content like this:
+
+```
+p = Page.first
+p.fields.your_field #your_field would be a custom field you've created in Advanced Custom Fields
+p.fields.content #the default 'content' field from the Rooftop admin interface
+```
+
+
 ## SSL / TLS
 Hosted Rooftop from rooftopcms.io exclusively uses ssl/tls. you need to configure the rooftop library to use ssl.
  
