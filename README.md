@@ -158,6 +158,13 @@ p.fields.your_field #your_field would be a custom field you've created in Advanc
 p.fields.content #the default 'content' field from the Rooftop admin interface
 ```
 
+You can get a list of all the fields on your model like this:
+
+```
+p = Page.first
+p.fields.field_names #returns an array of field names you can call
+```
+
 
 ## SSL / TLS
 Hosted Rooftop from rooftopcms.io exclusively uses ssl/tls. you need to configure the rooftop library to use ssl.
