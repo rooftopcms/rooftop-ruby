@@ -21,9 +21,9 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "bundler", "~> 1.6"
   spec.add_development_dependency "rake"
 
-  spec.add_dependency "activesupport"
-  spec.add_dependency "require_all"
-  spec.add_dependency "her"
-  spec.add_dependency "faraday-http-cache"
+  spec.add_dependency "activesupport", "~> 4"
+  spec.add_dependency "require_all", "~> 1.3"
+  spec.add_dependency "her", "~> 0.8"
+  spec.add_dependency "faraday-http-cache", "~> 1.2"
 
 end
