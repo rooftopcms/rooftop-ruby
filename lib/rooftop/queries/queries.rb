@@ -27,7 +27,7 @@ module Rooftop
         if results.present?
           results
         else
-          raise Rooftop::RecordNotFound
+          raise Rooftop::RecordNotFoundError
         end
       end
     end
