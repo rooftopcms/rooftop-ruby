@@ -31,4 +31,22 @@ describe Post do
             expect(post.content.keys.include?("advanced")).to equal(true)
         end
     end
+
+    context "Saving posts" do
+        subject(:post) {Post.find(1)}
+
+        it "should update the post title" do
+            original_title = post.title
+            post.title = "Test #{rand}"
+            post.save
+
+            updated_post = Post.find(1)
+
+            expect(updated_post.title).not_to equal(original_title)
+
+            # restore the post title
+            post.title = original_title
+            post.save
+        end
+    end
 end
