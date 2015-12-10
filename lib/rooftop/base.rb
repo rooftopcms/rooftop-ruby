@@ -1,6 +1,8 @@
 module Rooftop
   module Base
     def self.included(base)
+      @included_classes ||= []
+      @included_classes << base
       base.extend ClassMethods
       base.include Her::Model
 
@@ -35,6 +37,10 @@ module Rooftop
       # Set up the hooks identified in other mixins. This method is defined in Rooftop::HookCalls
       base.send(:"setup_hooks!")
 
+    end
+
+    def self.included_classes
+      @included_classes
     end
 
     module ClassMethods
