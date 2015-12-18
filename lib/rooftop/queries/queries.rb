@@ -12,8 +12,27 @@ module Rooftop
         # the fact that 'slug' is referred to in the db as 'name' is irritating. Let's fix that
         # in queries so we can specify {slug: "foo"}
         if args.keys.collect(&:to_sym).include?(:slug)
-          args[:name] = args[:slug]
+          if args[:slug].is_a?(Array)
+            args[:post_name__in] ||= []
+            args[:slug].each do |slug|
+              args[:post_name__in] << slug
+            end
+          else
+            args[:name] = args[:slug]
+          end
           args.delete(:slug)
+        end
+
+        if args.keys.collect(&:to_sym).include?(:id)
+          if args[:id].is_a?(Array)
+            args[:post__in] ||= []
+            args[:id].each do |id|
+              args[:post__in] << id
+            end
+          else
+            args[:page_id] = args[:id]
+          end
+          args.delete(:id)
         end
         filters =  args.inject({}) {|hash,pair| hash["filter[#{pair.first}]"] = pair.last; hash}
         #Call the Her `where` method with our new filters
