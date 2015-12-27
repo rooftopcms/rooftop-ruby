@@ -82,7 +82,7 @@ Sometimes you want to do something with a field after it's returned. for example
 To coerce one or more fields, call a class method in your class and pass a lambda which is called on the field.
 
 ```
-class mycustomposttype
+class MyCustomPostType
     include rooftop::post
     self.post_type = "my_custom_post_type"
     coerce_field date: ->(date) { datetime.parse(date)}
@@ -191,7 +191,36 @@ _(the cache headers plugin for rooftop is a work in progress)_
  If you want to cache responses, set `perform_caching` to true in your configuration block. you will need to provide a cache store and logger in the `cache_store` and `cache_logger` config options. by default, the cache store is set to `activesupport::cache.lookup_store(:memory_store)` which is a sensible default, but isn't shared across threads. any activesupport-compatible cache store (memcache, file, redis etc.) will do.
    
  The `cache_logger` option determines where cache debug messages (hits, misses etc.) get stored. by default it's `nil`, which switches logging off.
-
+ 
+ ## Menus
+ WordPress comes with quite a powerful way to build menus, rather than needing to traverse a tree of objects directly.
+ 
+ ### Accessing the menu you need
+ At the moment you have to know the ID of the menu you need - not ideal. Keep an eye on the following issues to get an update:
+ 
+ * https://github.com/rooftopcms/rooftop-custom-content-setup/issues/3
+ * https://github.com/rooftopcms/rooftop-custom-content-setup/issues/4
+ 
+ So for now, with that in mind, here's how you do it:
+ 
+ ```
+ r = Rooftop::Menus::Menu.find(2) #returns a menu with ID 2
+ r.items # a collection of Rooftop::Menus::Item
+ ```
+ 
+ ### Accessing the object to which a menu item refers
+ If a menu item refers to an object in Rooftop - a post or a page - you can access the original object by calling `object()`.
+  
+ ```
+r = Rooftop::Menus::Menu.find(2) #returns a menu with ID 2
+r.items # a collection of Rooftop::Menus::Item
+item = r.items.first # a Rooftop::Menus::Item
+item.object # an object derived from the post type and ID. 
+ ```
+ 
+ If you haven't defined a class for a post type, you'll get a `Rooftop::Menus::UnmappedObjectError`
+ 
+ 
 # Roadmap
 Lots! here's a flavour:
 
@@ -199,7 +228,6 @@ Lots! here's a flavour:
 
 * preview mode. rooftop supports passing a preview header to see content in draft. we'll expose that in the rooftop gem as a constant.
 * taxonomies will be supported and side-loaded against content
-* menus are exposed by rooftop. we need to create a rooftop::menu mixin 
 * media: media is exposed by the api, and should be accessible and downloadable.
 
 ## Writing
