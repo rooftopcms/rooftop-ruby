@@ -2,7 +2,7 @@ module Rooftop
   module Base
     def self.included(base)
       @included_classes ||= []
-      @included_classes << base
+      @included_classes << base unless @included_classes.include?(base)
       base.extend ClassMethods
       base.include Her::Model
 
@@ -64,6 +64,7 @@ module Rooftop
       def setup_path!
         @api_endpoint ||= collection_path
         self.collection_path "#{@api_namespace}/v#{@api_version}/#{@api_endpoint}"
+
       end
 
       # Allow calling 'first'

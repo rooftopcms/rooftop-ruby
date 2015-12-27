@@ -25,7 +25,7 @@ module Rooftop
   end
 
   class Configuration
-    attr_accessor :api_token, :url, :site_name, :perform_caching, :cache_store, :cache_logger, :ssl_options, :proxy
+    attr_accessor :api_token, :url, :site_name, :perform_caching, :cache_store, :cache_logger, :ssl_options, :proxy, :post_type_mapping
     attr_reader :connection,
                 :connection_path,
                 :api_path, #actually writeable with custom setter
@@ -44,6 +44,7 @@ module Rooftop
       @cache_logger = nil
       @ssl_options = {}
       @proxy = nil
+      @post_type_mapping = {}
     end
 
     def api_path=(path)

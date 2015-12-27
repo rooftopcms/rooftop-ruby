@@ -8,6 +8,7 @@ module Rooftop
 
     module ClassMethods
       def post_type=(type)
+        Rooftop.configuration.post_type_mapping.merge!(type => self)
         self.api_endpoint = type.pluralize
       end
     end
