@@ -27,8 +27,8 @@ module Rooftop
 
       # Date and Modified fields are pretty universal in responses from WP, so we can automatically
       # coerce these to DateTime.
-      base.send(:coerce_field,date: ->(date) {DateTime.parse(date)})
-      base.send(:coerce_field,modified: ->(modified) {DateTime.parse(modified)})
+      base.send(:coerce_field,date: ->(date) {DateTime.parse(date) unless date.nil?})
+      base.send(:coerce_field,modified: ->(modified) {DateTime.parse(modified) unless modified.nil?})
 
       # Having coerced the fields, we can alias them (order is important - coerce first.)
       base.send(:alias_field, date: :created_at)
