@@ -9,8 +9,8 @@ module Rooftop
   DEFAULT_API_VERSION = 2
 
   class << self
-    #accessor to set the preview API for use instead of the production one
-    attr_accessor :use_preview_api
+    #accessor to set whether we're in privew mode
+    attr_accessor :preview
 
     #access the configuration class as Rooftop.configuration
     attr_accessor :configuration
