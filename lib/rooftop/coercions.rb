@@ -15,6 +15,11 @@ module Rooftop
           end
         end
       })
+      base.send(:before_save, ->(r) {
+        r.coercions.each do |field,coercion|
+          r.send(:"restore_#{field}!")
+        end
+      })
     end
 
     module ClassMethods

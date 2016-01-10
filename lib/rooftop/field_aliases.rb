@@ -19,6 +19,12 @@ module Rooftop
         end
       })
 
+      base.send(:before_save, ->(r) {
+        r.field_aliases.each do |old,new|
+          r.send(:"restore_#{new}!")
+        end
+      })
+
     end
 
     module ClassMethods

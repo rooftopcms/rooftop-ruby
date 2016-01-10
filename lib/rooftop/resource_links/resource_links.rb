@@ -9,6 +9,10 @@ module Rooftop
           r.resource_links = Rooftop::ResourceLinks::Collection.new(r._links)
         end
       })
+
+      base.send(:before_save, ->(r) {
+        r.restore_resource_links!
+      })
     end
 
   end

@@ -34,6 +34,11 @@ module Rooftop
           r.fields = Rooftop::Content::Collection.new((basic_fields + advanced_fields))
         end
       })
+
+      base.send(:before_save, ->(r) {
+        r.restore_fields!
+        #TODO we need to write these back into the actual fields.
+      })
     end
   end
 end
