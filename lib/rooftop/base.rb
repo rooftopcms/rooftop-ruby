@@ -64,11 +64,6 @@ module Rooftop
       def setup_path!
         @api_endpoint ||= collection_path
         self.collection_path "#{@api_namespace}/v#{@api_version}/#{@api_endpoint}"
-
-      end
-
-      def all
-        super(per_page: 9999999)
       end
 
       # Allow calling 'first'

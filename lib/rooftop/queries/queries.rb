@@ -1,5 +1,6 @@
 module Rooftop
   module Queries
+    PER_PAGE = 99999999
     def self.included(base)
       base.extend ClassMethods
     end
@@ -35,6 +36,10 @@ module Rooftop
           args.delete(:id)
         end
         filters =  args.inject({}) {|hash,pair| hash["filter[#{pair.first}]"] = pair.last; hash}
+
+        # we probably want every result without pagination, unless we specify otherwise
+        filters = {per_page: Rooftop::Queries::PER_PAGE}.merge(filters)
+
         #Call the Her `where` method with our new filters
         super().where(filters)
       end
@@ -48,6 +53,11 @@ module Rooftop
         else
           raise Rooftop::RecordNotFoundError
         end
+      end
+
+      # 'all' needs to have a querystring param passed to really get all. It should be -1 but for some reason that's not working.
+      def all(args = {})
+        super({per_page: Rooftop::Queries::PER_PAGE}.merge(args))
       end
     end
   end
