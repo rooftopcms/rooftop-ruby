@@ -7,8 +7,14 @@ module Rooftop
         super(args)
       end
 
-      def resolve
-        raise NotImplementedError, "TODO: resolve the link."
+      def resolve(klass=nil)
+        begin
+          klass ||= @link_type.camelize.classify.constantize
+          klass.get(@href)
+        rescue
+          raise Rooftop::ResourceLinks::UnresolvableLinkError, "Couldn't resolve a link of type #{@link_type}. You could try passing a class into the resolve() method."
+        end
+
       end
     end
   end
