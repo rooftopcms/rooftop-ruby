@@ -36,6 +36,11 @@ module Rooftop
       super
     end
 
+    def on_complete(env)
+        status = env[:status]
+        @logger.debug(@progname) { curl_output(env[:response_headers], env[:body]).inspect }
+    end
+
     private
     def curl_output(headers, body)
       string = headers.collect { |k,v| "#{k}: #{v}" }.join("\n")
