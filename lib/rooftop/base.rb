@@ -68,7 +68,7 @@ module Rooftop
       end
 
       def all
-        super(per_page: -1)
+        super(per_page: 9999999)
       end
 
       # Allow calling 'first'
