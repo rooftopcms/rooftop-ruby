@@ -67,9 +67,17 @@ module Rooftop
 
       end
 
+      def all
+        super(per_page: -1)
+      end
+
       # Allow calling 'first'
       def first
         all.first
+      end
+
+      def reload!
+        self.class.find(self.id) if self.id
       end
 
 
