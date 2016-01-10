@@ -81,7 +81,7 @@ module Rooftop
 
       @connection_path = "#{@url}#{@api_path}"
 
-      @connection.setup url: @connection_path, ssl: @ssl_options, proxy: @proxy do |c|
+      @connection.setup url: @connection_path, ssl: @ssl_options, proxy: @proxy, send_only_modified_attributes: true do |c|
         if @logger
           c.use Rooftop::DebugMiddleware
         end
