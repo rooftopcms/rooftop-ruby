@@ -10,7 +10,7 @@ module Rooftop
 
   class << self
     #accessor to set whether we're in privew mode
-    attr_accessor :preview
+    attr_accessor :preview, :debug_request, :debug_response
 
     #access the configuration class as Rooftop.configuration
     attr_accessor :configuration

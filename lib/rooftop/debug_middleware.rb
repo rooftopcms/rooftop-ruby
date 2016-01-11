@@ -23,28 +23,36 @@ module Rooftop
       @progname = progname
     end
 
-    # Public: Used by Faraday to execute the middleware during the
-    # request/response cycle.
-    #
-    # env - A Faraday-compatible request environment.
-    #
-    # Returns the result of the parent application execution.
-    #
+
     def call(env)
-      @logger.info(@progname) { "#{env[:method].upcase} #{env[:url]}" }
-      @logger.debug(@progname) { curl_output(env[:request_headers], env[:body]).inspect }
+      if Rooftop.debug_request
+        @logger.info(@progname) { "#{env[:method].upcase} #{env[:url]}" }
+        @logger.debug(@progname) { curl_output(env[:request_headers], env[:body]).inspect }
+      end
       super
     end
 
     def on_complete(env)
+      if Rooftop.debug_response
         status = env[:status]
+        log_response_status(@progname, status) { "HTTP #{status}" }
         @logger.debug(@progname) { curl_output(env[:response_headers], env[:body]).inspect }
+      end
     end
 
     private
     def curl_output(headers, body)
       string = headers.collect { |k,v| "#{k}: #{v}" }.join("\n")
       string + "\n\n#{body}"
+    end
+
+    def log_response_status(progname, status, &block)
+      case status
+        when 200..399
+          @logger.info(progname, &block)
+        else
+          @logger.warn(progname, &block)
+      end
     end
 
   end
