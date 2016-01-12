@@ -25,7 +25,7 @@ module Rooftop
 
 
     def call(env)
-      if Rooftop.debug_request
+      if Rooftop.debug_requests
         @logger.info(@progname) { "#{env[:method].upcase} #{env[:url]}" }
         @logger.debug(@progname) { curl_output(env[:request_headers], env[:body]).inspect }
       end
@@ -33,7 +33,7 @@ module Rooftop
     end
 
     def on_complete(env)
-      if Rooftop.debug_response
+      if Rooftop.debug_responses
         status = env[:status]
         log_response_status(@progname, status) { "HTTP #{status}" }
         @logger.debug(@progname) { curl_output(env[:response_headers], env[:body]).inspect }

@@ -10,7 +10,7 @@ module Rooftop
 
   class << self
     #accessor to set whether we're in privew mode
-    attr_accessor :preview, :debug_request, :debug_response
+    attr_accessor :preview, :debug_requests, :debug_responses
 
     #access the configuration class as Rooftop.configuration
     attr_accessor :configuration
@@ -50,10 +50,6 @@ module Rooftop
 
     def api_path=(path)
       @api_path = path || @api_path
-    end
-
-    def user_agent=(agent)
-      @user_agent = agent || @user_agent
     end
 
     def extra_headers=(headers)
