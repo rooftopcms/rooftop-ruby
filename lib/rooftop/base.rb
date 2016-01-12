@@ -16,7 +16,7 @@ module Rooftop
       # Aliases allow you to specify a field (or fields) to alias
       base.include Rooftop::FieldAliases
       # Queries mixin includes a fixup for there `where()` method
-      base.prepend Rooftop::Queries
+      base.include Rooftop::Queries
       # Links mixin handles the _links key in a response
       base.include Rooftop::ResourceLinks
       # Use the API instance we have configured - in a proc because we can't control load order
@@ -27,8 +27,8 @@ module Rooftop
 
       # Date and Modified fields are pretty universal in responses from WP, so we can automatically
       # coerce these to DateTime.
-      base.send(:coerce_field,date: ->(date) {DateTime.parse(date.to_s) unless date.nil?})
-      base.send(:coerce_field,modified: ->(modified) {DateTime.parse(modified.to_s) unless modified.nil?})
+      base.send(:coerce_field,date: ->(date) {DateTime.parse(date) unless date.nil?})
+      base.send(:coerce_field,modified: ->(modified) {DateTime.parse(modified) unless modified.nil?})
 
       # Having coerced the fields, we can alias them (order is important - coerce first.)
       base.send(:alias_field, date: :created_at)
