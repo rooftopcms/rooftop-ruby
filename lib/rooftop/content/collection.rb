@@ -2,9 +2,17 @@ module Rooftop
   module Content
     class Collection < ::Array
       def initialize(content_fields)
-          content_fields.each do |field|
-            self << Rooftop::Content::Field.new(field)
+        content_fields.each do |field|
+          # if the field has a 'fields' key, it is a repeater field. Collect the sub-fields and
+          # set the field content to the collection of repeated fields
+          if field.has_key?('fields')
+            repeated_fields = field[:fields].collect{|repeated_fields| repeated_fields.collect{|field| Rooftop::Content::Field.new(field)}}.flatten
+            field.delete(:fields)
+            field[:value] = repeated_fields
           end
+
+          self << Rooftop::Content::Field.new(field)
+        end
       end
 
       # Find content_fields by attribute. Assume there will only be one attribute in the search
