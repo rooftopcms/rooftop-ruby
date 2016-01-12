@@ -17,7 +17,7 @@ module Rooftop
       })
       base.send(:before_save, ->(r) {
         r.coercions.each do |field,coercion|
-          r.send(:"restore_#{field}!")
+          r.send(:"restore_#{field}!") unless r.new?
         end
       })
     end

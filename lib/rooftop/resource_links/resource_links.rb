@@ -11,8 +11,17 @@ module Rooftop
       })
 
       base.send(:before_save, ->(r) {
-        r.restore_resource_links!
+        r.restore_resource_links! unless r.new?
       })
+
+      base.extend ClassMethods
+
+    end
+
+    module ClassMethods
+      def with_embedded_relations
+        where(:_embed => true)
+      end
     end
 
   end

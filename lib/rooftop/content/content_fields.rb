@@ -36,7 +36,7 @@ module Rooftop
       })
 
       base.send(:before_save, ->(r) {
-        r.restore_fields!
+        r.restore_fields! unless r.new?
         #TODO we need to write these back into the actual fields.
       })
     end
