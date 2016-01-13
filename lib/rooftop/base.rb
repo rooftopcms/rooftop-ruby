@@ -25,6 +25,9 @@ module Rooftop
       # Turn calls to `content` into a collection of Rooftop::ContentField objects
       base.include Rooftop::Content
 
+      # Add some useful scopes
+      base.include Rooftop::Scopes
+
       # Date and Modified fields are pretty universal in responses from WP, so we can automatically
       # coerce these to DateTime.
       base.send(:coerce_field,date: ->(date) {DateTime.parse(date.to_s) unless date.nil?})
