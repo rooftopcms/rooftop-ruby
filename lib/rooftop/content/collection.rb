@@ -6,7 +6,10 @@ module Rooftop
           # if the field has a 'fields' key, it is a repeater field. Collect the sub-fields and
           # set the field content to the collection of repeated fields
           if field.has_key?('fields')
-            repeated_fields = field[:fields].collect{|repeated_fields| repeated_fields.collect{|field| Rooftop::Content::Field.new(field)}}.flatten
+            repeated_fields = field[:fields].collect do |repeated_fields|
+              repeated_fields.collect{|field| Rooftop::Content::Field.new(field)}
+            end
+            
             field.delete(:fields)
             field[:value] = repeated_fields
           end
