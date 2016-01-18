@@ -34,13 +34,21 @@ module Rooftop
       base.send(:coerce_field,modified: ->(modified) {DateTime.parse(modified.to_s) unless modified.nil?})
 
       base.send(:after_find, ->(record) {
-        record.title_object = record.title
-        record.title = record.title[:rendered]
+        if record.title.is_a?(ActiveSupport::HashWithIndifferentAccess)
+          record.title_object = record.title
+          record.title = record.title[:rendered]
+        end
       })
 
       base.send(:before_save, ->(record) {
         record.title_object[:rendered] = record.title
-        # record.restore_title!
+      })
+
+      base.send(:after_save, ->(record) {
+        if record.title.is_a?(ActiveSupport::HashWithIndifferentAccess)
+          record.title_object = record.title
+          record.title = record.title[:rendered]
+        end
       })
 
       # Having coerced the fields, we can alias them (order is important - coerce first.)
