@@ -33,6 +33,16 @@ module Rooftop
       base.send(:coerce_field,date: ->(date) {DateTime.parse(date.to_s) unless date.nil?})
       base.send(:coerce_field,modified: ->(modified) {DateTime.parse(modified.to_s) unless modified.nil?})
 
+      base.send(:after_find, ->(record) {
+        record.title_object = record.title
+        record.title = record.title[:rendered]
+      })
+
+      base.send(:before_save, ->(record) {
+        record.title_object[:rendered] = record.title
+        # record.restore_title!
+      })
+
       # Having coerced the fields, we can alias them (order is important - coerce first.)
       base.send(:alias_field, date: :created_at)
       base.send(:alias_field, modified: :updated_at)
