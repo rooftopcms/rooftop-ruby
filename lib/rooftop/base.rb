@@ -28,28 +28,13 @@ module Rooftop
       # Add some useful scopes
       base.include Rooftop::Scopes
 
+      # Coerce the title field from an object to a string
+      base.include Rooftop::Coercions::TitleCoercion
+
       # Date and Modified fields are pretty universal in responses from WP, so we can automatically
       # coerce these to DateTime.
       base.send(:coerce_field,date: ->(date) {DateTime.parse(date.to_s) unless date.nil?})
       base.send(:coerce_field,modified: ->(modified) {DateTime.parse(modified.to_s) unless modified.nil?})
-
-      base.send(:after_find, ->(record) {
-        if record.title.is_a?(ActiveSupport::HashWithIndifferentAccess)
-          record.title_object = record.title
-          record.title = record.title[:rendered]
-        end
-      })
-
-      base.send(:before_save, ->(record) {
-        record.title_object[:rendered] = record.title
-      })
-
-      base.send(:after_save, ->(record) {
-        if record.title.is_a?(ActiveSupport::HashWithIndifferentAccess)
-          record.title_object = record.title
-          record.title = record.title[:rendered]
-        end
-      })
 
       # Having coerced the fields, we can alias them (order is important - coerce first.)
       base.send(:alias_field, date: :created_at)
