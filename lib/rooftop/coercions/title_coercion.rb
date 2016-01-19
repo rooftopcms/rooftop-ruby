@@ -7,6 +7,7 @@ module Rooftop
 
         base.send(:before_save, ->(record) {
           if record.respond_to?(:title) && record.respond_to?(:title_object)
+            record.title_object ||= {}
             record.title_object[:rendered] = record.title
           end
         })
