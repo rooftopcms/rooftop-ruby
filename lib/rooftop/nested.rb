@@ -18,7 +18,7 @@ module Rooftop
     end
 
     def parent
-      if respond_to?(:resource_links)
+      if respond_to?(:resource_links) && resource_links
         resource_links.find_by(link_type: "up").first
       end
     end
