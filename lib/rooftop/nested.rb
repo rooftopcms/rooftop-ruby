@@ -1,6 +1,10 @@
 module Rooftop
   module Nested
 
+    def root
+      ancestors.last
+    end
+
     def ancestors
       if respond_to?(:resource_links)
         resource_links.find_by(link_type: "#{Rooftop::ResourceLinks::CUSTOM_LINK_RELATION_BASE}/ancestors")
@@ -19,8 +23,12 @@ module Rooftop
 
     def parent
       if respond_to?(:resource_links) && resource_links
-        resource_links.find_by(link_type: "up").first
+        ancestors.first
       end
+    end
+
+    def siblings
+      self.class.find(parent.id).children.reject! {|c| c.id == self.id}
     end
   end
 end
