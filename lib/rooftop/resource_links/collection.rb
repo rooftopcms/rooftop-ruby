@@ -2,10 +2,10 @@ module Rooftop
   module ResourceLinks
     class Collection < ::Array
       attr_reader :links
-      def initialize(links)
+      def initialize(links, klass=nil)
         links.each do |link_type,links|
           links.each do |link|
-            self << Rooftop::ResourceLinks::Link.new(link_type,link)
+            self << Rooftop::ResourceLinks::Link.new(link_type,link, klass)
           end
         end
       end
