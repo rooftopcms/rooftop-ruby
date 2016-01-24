@@ -80,6 +80,8 @@ module Rooftop
       @connection.setup url: @connection_path, ssl: @ssl_options, proxy: @proxy, send_only_modified_attributes: true do |c|
         c.use Rooftop::EmbedMiddleware
 
+        c.use Rooftop::PaginationMiddleware
+
         if @logger
           c.use Rooftop::DebugMiddleware
         end

@@ -19,6 +19,10 @@ module Rooftop
       base.include Rooftop::Queries
       # Links mixin handles the _links key in a response
       base.include Rooftop::ResourceLinks
+
+      # Pagination mixin - uses pagination metadata set in the PaginationMiddleware
+      base.include Rooftop::Pagination
+
       # Use the API instance we have configured - in a proc because we can't control load order
       base.send(:use_api,->{Rooftop.configuration.connection})
 
