@@ -8,6 +8,7 @@ module Rooftop
     def call(env)
       query = Faraday::Utils.parse_query(env.url.query) || {}
       query["_embed"] = true if query.has_key?("include_embedded_resources")
+      query["per_page"] = 99999999 unless query.has_key?("per_page")
       env.url.query = Faraday::Utils.build_query(query.except("include_embedded_resources"))
       @app.call env
     end
