@@ -7,7 +7,7 @@ module Rooftop
 
     module ClassMethods
       # We need to fix up the `where()` filter. WP-API expects a url format for filters like this:
-      # /?filter[something]=foo.
+      # /?filter[something]=foo. But we have a magic hash key to allow us to send things which aren't mangled.
       def where(args)
         args = HashWithIndifferentAccess.new(args)
         # the fact that 'slug' is referred to in the db as 'name' is irritating. Let's fix that
@@ -35,10 +35,19 @@ module Rooftop
           end
           args.delete(:id)
         end
-        filters =  args.inject({}) {|hash,pair| hash["filter[#{pair.first}]"] = pair.last; hash}
+
+        if args.keys.collect(&:to_sym).include?(:no_filter)
+          args_to_filter = args.except(*args[:no_filter]).except(:no_filter)
+          args_not_to_filter = args.except(args_to_filter).except(:no_filter)
+          filters =  args_to_filter.inject({}) {|hash,pair| hash["filter[#{pair.first}]"] = pair.last; hash}
+          filters = {per_page: Rooftop::Queries::PER_PAGE}.merge(filters).merge(args_not_to_filter)
+        else
+          #TODO DRY
+          filters =  args.inject({}) {|hash,pair| hash["filter[#{pair.first}]"] = pair.last; hash}
+          filters = {per_page: Rooftop::Queries::PER_PAGE}.merge(filters)
+        end
 
         # we probably want every result without pagination, unless we specify otherwise
-        filters = {per_page: Rooftop::Queries::PER_PAGE}.merge(filters)
 
         #Call the Her `where` method with our new filters
         super().where(filters)
