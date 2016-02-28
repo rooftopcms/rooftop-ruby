@@ -17,7 +17,7 @@ module Rooftop
             return @mapped_class.send(:find, id)
           else
             # otherwise we're going to have make a call to the link's href.
-            @mapped_class.get(@href)
+            @mapped_class.get(href)
           end
         else
           raise Rooftop::ResourceLinks::UnresolvableLinkError, "Couldn't resolve a link of type #{@link_type}. Try passing the class you want to resolve to."
