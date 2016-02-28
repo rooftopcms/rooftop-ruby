@@ -2,7 +2,7 @@ module Rooftop
   module Nested
 
     def root
-      ancestors.last
+      ancestors.last || resource_links.find_by(link_type: 'self').first
     end
 
     def ancestors
