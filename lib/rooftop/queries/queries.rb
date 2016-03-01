@@ -48,11 +48,11 @@ module Rooftop
           args_to_filter = args.except(*args[:no_filter]).except(:no_filter)
           args_not_to_filter = args.except(args_to_filter).except(:no_filter)
           filters =  args_to_filter.inject({}) {|hash,pair| hash["filter[#{pair.first}]"] = pair.last; hash}
-          filters = {per_page: Rooftop::Queries::PER_PAGE}.merge(filters).merge(args_not_to_filter)
+          filters = {per_page: per_page}.merge(filters).merge(args_not_to_filter)
         else
           #TODO DRY
           filters =  args.inject({}) {|hash,pair| hash["filter[#{pair.first}]"] = pair.last; hash}
-          filters = {per_page: Rooftop::Queries::PER_PAGE}.merge(filters)
+          filters = {per_page: per_page}.merge(filters)
         end
 
         # we probably want every result without pagination, unless we specify otherwise
