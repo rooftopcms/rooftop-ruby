@@ -36,6 +36,14 @@ module Rooftop
           args.delete(:id)
         end
 
+        if args.keys.include?('per_page')
+          per_page = args['per_page']
+          args[:no_filter] ||= []
+          args[:no_filter] << :per_page unless args[:no_filter].include?('per_page')
+        else
+          per_page = Rooftop::Queries::PER_PAGE
+        end
+
         if args.keys.collect(&:to_sym).include?(:no_filter)
           args_to_filter = args.except(*args[:no_filter]).except(:no_filter)
           args_not_to_filter = args.except(args_to_filter).except(:no_filter)
@@ -48,7 +56,6 @@ module Rooftop
         end
 
         # we probably want every result without pagination, unless we specify otherwise
-
         #Call the Her `where` method with our new filters
         super().where(filters)
       end

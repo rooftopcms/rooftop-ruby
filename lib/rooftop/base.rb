@@ -84,11 +84,6 @@ module Rooftop
       def reload!
         self.class.find(self.id) if self.id
       end
-
-
-
-
     end
-
   end
 end
