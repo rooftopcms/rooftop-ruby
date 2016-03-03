@@ -1,5 +1,14 @@
 module Rooftop
   module Nested
+    
+    def self.included(base)
+      @nested_classes ||= []
+      @nested_classes << base unless @nested_classes.include?(base)
+    end
+
+    def self.nested_classes
+      @nested_classes
+    end
 
     def root
       ancestors.last || resource_links.find_by(link_type: 'self').first
