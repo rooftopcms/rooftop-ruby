@@ -23,7 +23,11 @@ module Rooftop
 
 
       def to_s
-        value if respond_to?(:value)
+        if respond_to?(:value) && value.is_a?(String)
+          value
+        else
+          inspect
+        end
       end
     end
   end
