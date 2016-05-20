@@ -5,8 +5,8 @@ module Rooftop
         env[:request_headers]["Api-Token"] = Rooftop.configuration.api_token
       end
 
-      if Rooftop.preview
-        env[:request_headers]['preview'] = "true"
+      if Rooftop.include_drafts
+        env[:request_headers]['include-drafts'] = "true"
       end
 
       Rooftop.configuration.extra_headers.each do |key,value|

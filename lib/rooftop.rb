@@ -9,8 +9,12 @@ module Rooftop
   DEFAULT_API_VERSION = 2
 
   class << self
-    #accessor to set whether we're in privew mode
-    attr_accessor :preview, :debug_requests, :debug_responses
+    extend Gem::Deprecate
+    #accessor to set whether we need to debug responses
+    attr_accessor :debug_requests, :debug_responses
+
+    # accessor to set whether to include drafts
+    attr_accessor :include_drafts
 
     #access the configuration class as Rooftop.configuration
     attr_accessor :configuration
@@ -22,6 +26,18 @@ module Rooftop
       self.configuration.configure_connection
     end
 
+    ##################
+    # We're deprecating Rooftop.preview, because Rooftop previews are done per instance.
+    def preview=(preview)
+      @include_drafts = preview
+    end
+
+    def preview
+      @include_drafts
+    end
+    deprecate :preview=, :include_drafts=, 2016, 07
+    deprecate :preview, :include_drafts, 2016, 07
+    ##################
   end
 
   class Configuration
@@ -63,6 +79,8 @@ module Rooftop
     def user_agent=(agent)
       @user_agent = agent || @user_agent
     end
+
+
 
     # Return the Configuration object as a hash, with symbols as keys.
     # @return [Hash]
