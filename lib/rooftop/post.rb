@@ -3,6 +3,7 @@ module Rooftop
     def self.included(base)
       base.include Rooftop::Base
       base.include Rooftop::Nested
+      base.include Rooftop::Preview
       base.extend ClassMethods
     end
 

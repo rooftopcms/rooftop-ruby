@@ -5,6 +5,7 @@ module Rooftop
       @page_classes << base unless @page_classes.include?(base)
       base.include Rooftop::Base
       base.include Rooftop::Nested
+      base.include Rooftop::Preview
       base.extend ClassMethods
     end
 
