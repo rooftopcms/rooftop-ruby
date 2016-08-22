@@ -21,7 +21,7 @@ module Rooftop
     end
 
     def terms
-      TaxonomyTerm.get(resource_links.find_by(link_type: :item).first.href)
+      TaxonomyTerm.get(resource_links.find_by(link_type: "wp:items").first.href)
     end
   end
 end

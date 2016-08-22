@@ -1,3 +1,3 @@
 module Rooftop
-  VERSION = "0.0.7.9"
+  VERSION = "0.1.0"
 end
