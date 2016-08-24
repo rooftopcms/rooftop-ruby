@@ -7,6 +7,7 @@ module Rooftop
       if @preview.attributes.has_key?(:data) && @preview.data[:status] == 404
         return nil
       else
+        @preview.run_callbacks(:find)
         return @preview
       end
     end
