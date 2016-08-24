@@ -34,6 +34,8 @@ module Rooftop
         collect(&:name)
       end
 
+      alias_method :names, :field_names
+
       def method_missing(method, *args, &block)
         fields = named(method)
         if fields.length > 0

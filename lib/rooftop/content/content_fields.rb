@@ -40,5 +40,17 @@ module Rooftop
         #TODO we need to write these back into the actual fields.
       })
     end
+
+    # test whether an instance has a field by name. Accepts a second argument if you want to test either the string value or the class.
+    def has_field?(name, comparison=nil)
+      has_field = fields.respond_to?(name.to_sym)
+      if comparison.present? && comparison.is_a?(String)
+        has_field && (fields.send(name.to_sym) == comparison)
+      elsif comparison.present?
+        has_field && fields.send(name.to_sym).is_a?(comparison)
+      else
+        has_field
+      end
+    end
   end
 end
