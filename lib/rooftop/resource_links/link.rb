@@ -16,6 +16,10 @@ module Rooftop
           if respond_to?(:id)
             return @mapped_class.send(:find, id)
           else
+            # TODO this is a fudge to get around some hrefs which don't have /wp/v2 in them
+            unless href =~ /wp\/v2/
+              href.gsub!('wp-json','wp-json/wp/v2')
+            end
             # otherwise we're going to have make a call to the link's href.
             result = @mapped_class.get(href)
             result.run_callbacks(:find)

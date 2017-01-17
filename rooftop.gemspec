@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.summary       = "An ActiveRecord-like interface to the Rooftop CMS JSON API"
   spec.description   = "An ActiveRecord-like interface to the Rooftop CMS JSON API"
   spec.homepage      = "http://www.rooftopcms.com"
-  spec.license       = "GPL v3"
+  spec.license       = "GPL-3.0"
 
   spec.files         = `git ls-files -z`.split("\x0")
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
