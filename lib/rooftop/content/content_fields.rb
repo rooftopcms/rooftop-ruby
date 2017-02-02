@@ -26,11 +26,14 @@ module Rooftop
           advanced_fields = r.content[:advanced].collect do |fieldset|
             fieldset[:fields].each do |field|
               field.merge!(fieldset: fieldset[:title])
-              field[:type] = field[:class]
+              if field[:class].present?
+                field[:type] = field[:class]
+              end
               field.delete(:class)
             end
             fieldset[:fields]
-          end.flatten
+          end
+          advanced_fields.flatten!
           r.fields = Rooftop::Content::Collection.new((basic_fields + advanced_fields))
         end
       })
