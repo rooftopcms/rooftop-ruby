@@ -3,7 +3,7 @@ module Rooftop
 
     def self.included(base)
       base.send(:before_save, -> {
-        self.write_advanced_fields = true
+        self.write_advanced_fields = self.class.write_advanced_fields
       })
 
       base.extend ClassMethods
