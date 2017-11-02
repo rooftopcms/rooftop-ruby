@@ -96,6 +96,7 @@ module Rooftop
       @connection_path = "#{@url}#{@api_path}"
 
       @connection.setup url: @connection_path, ssl: @ssl_options, proxy: @proxy, send_only_modified_attributes: true do |c|
+        c.use Rooftop::WriteAdvancedFieldsMiddleware
         c.use Rooftop::EmbedMiddleware
 
         c.use Rooftop::PaginationMiddleware
