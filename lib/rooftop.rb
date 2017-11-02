@@ -52,7 +52,9 @@ module Rooftop
     def initialize
       @extra_headers = {}
       @connection ||= Her::API.new
-      @advanced_options = {}
+      @advanced_options = {
+        create_nested_content_collections: true
+      }
       @api_path = "/wp-json/"
       @user_agent = "Rooftop CMS Ruby client #{Rooftop::VERSION} (http://github.com/rooftopcms/rooftop-ruby)"
       @perform_caching = false
