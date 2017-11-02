@@ -2,23 +2,26 @@ module Rooftop
   module Content
     class Field < ::OpenStruct
 
-      #todo - this would be nice to get working. For a relationship, we should be returning the object not a big hash
-      # def initialize(hash=nil)
-      #   if hash.has_key?(:type) && hash[:type] == "relationship"
-      #     related_objects = [hash[:value]].flatten
-      #     hash[:value] = related_objects.inject([]) do |array,object|
-      #       begin
-      #         klass = Rooftop.configuration.post_type_mapping[object[:post_type].to_sym] || object[:post_type].to_s.classify.constantize
-      #         array << klass.new(object).run_callbacks(:find)
-      #       rescue
-      #         array << object
-      #       end
-      #     end
-      #     super
-      #   else
-      #     super
-      #   end
-      # end
+      def initialize(hash=nil)
+        if hash.has_key?(:class)
+          hash[:type] = hash[:class]
+        end
+        super
+      end
+
+      def resolve
+        if respond_to?(:type) && type == "relationship"
+          related_ids = value.collect do |related|
+            if related.is_a?(Hash)
+              related[:ID]
+            else
+              related
+            end
+          end
+          klass = Rooftop.configuration.post_type_mapping[relationship[:class].to_sym] || relationship[:class].to_s.classify.constantize
+          klass.where(id: related_ids).to_a
+        end
+      end
 
 
 
