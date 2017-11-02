@@ -50,7 +50,11 @@ module Rooftop
       def method_missing(method, *args, &block)
         fields = named(method)
         if fields.length > 0
-          fields.first.value
+          if Rooftop.configuration.advanced_options[:resolve_relations]
+            fields.first.resolve
+          else
+            fields.first.value
+          end
         else
           raise Rooftop::Content::FieldNotFoundError, "No field named #{method} was found"
         end

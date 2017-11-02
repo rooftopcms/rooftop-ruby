@@ -19,7 +19,14 @@ module Rooftop
             end
           end
           klass = Rooftop.configuration.post_type_mapping[relationship[:class].to_sym] || relationship[:class].to_s.classify.constantize
-          klass.where(id: related_ids).to_a
+          resolved = klass.where(id: related_ids).to_a
+          if resolved.length == 1
+            resolved.first
+          else
+            resolved
+          end
+        else
+          value
         end
       end
 

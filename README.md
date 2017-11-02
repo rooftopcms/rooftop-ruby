@@ -178,6 +178,23 @@ In Version 1.0 onwards, the default is to return a Rooftop::Content::Collection 
 end
 ```
 
+### Resolving ACF relations
+ACF can relate one content type to another. In the native Rooftop response, you can return either an array of IDs or an array of hashes.
+
+In some circumstances it's reasonable to use these directly, but the nested hash representing a relation won't be updated if the relation itself is updated, which can be a problem.
+ 
+From version 1.0 onwards, __the default is to resolve these relations with another API call__. If you would prefer to stick with the existing behaviour, you can do that in the advanced options at configuration time:
+
+```ruby
+Rooftop.configure do |config|
+  config.advanced_options = {
+    resolve_relations: false
+  }
+end
+
+```
+
+
 ## SSL / TLS
 Hosted Rooftop from rooftopcms.io exclusively uses ssl/tls. you need to configure the rooftop library to use ssl.
  

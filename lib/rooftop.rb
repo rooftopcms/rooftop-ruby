@@ -53,7 +53,8 @@ module Rooftop
       @extra_headers = {}
       @connection ||= Her::API.new
       @advanced_options = {
-        create_nested_content_collections: true
+        create_nested_content_collections: true,
+        resolve_relations: true
       }
       @api_path = "/wp-json/"
       @user_agent = "Rooftop CMS Ruby client #{Rooftop::VERSION} (http://github.com/rooftopcms/rooftop-ruby)"
@@ -75,7 +76,8 @@ module Rooftop
     end
 
     def advanced_options=(opts)
-      @advanced_options = opts || @advanced_options
+      opts ||= {}
+      @advanced_options.merge!(opts)
     end
 
     def user_agent=(agent)
