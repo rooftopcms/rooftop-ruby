@@ -12,16 +12,25 @@ module Rooftop
     end
 
     module ClassMethods
-      attr_reader :write_advanced_fields
+      attr_accessor :write_advanced_fields
+      attr_reader :advanced_fields_schema
 
-      def write_advanced_fields=(tf)
-        @write_advanced_fields = tf
+      def advanced_fields_schema=(schema)
+        # todo in due course this should not be necessary because we can interrogate the schema from the endpoint
+        @advanced_fields_schema = schema
       end
+
+      def advanced_fields_schema
+        # todo interrogate the schema from the endpoint and memoize like this:
+        # @advanced_fields_schema ||= self.get_some_endpoint_to_retrieve_schema
+        @advanced_fields_schema
+      end
+
     end
 
     def advanced_fields_schema
-      # todo in due course this should return a class-level memoized attribute which interrogates the schema on the endpoint
-      super
+      # todo in future this needn't be memoized because it'll be done in the class method
+      self.class.advanced_fields_schema ||= super
     end
 
   end
