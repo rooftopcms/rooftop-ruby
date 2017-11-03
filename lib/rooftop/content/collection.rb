@@ -10,7 +10,7 @@ module Rooftop
           if field.has_key?('fields')
             if Rooftop.configuration.advanced_options[:create_nested_content_collections]
               repeated_fields = field[:fields].collect do |repeated_fields|
-                collection = self.class.new({}, owner)
+                collection = self.class.new({}, self)
                 repeated_fields.each {|field| collection << Rooftop::Content::Field.new(field)}
                 collection
               end
@@ -28,6 +28,17 @@ module Rooftop
           end
 
           self << Rooftop::Content::Field.new(field)
+        end
+      end
+
+      # When setting up a content collection, we pass in the owner of the collection.
+      # If that's another collection, we're dealing with nested fields so we need to get the root owner
+      def root_owner
+        if @owner.is_a?(Collection)
+          # we need to traverse up the owners 'til we get to the root owner
+          @owner.root_owner
+        else
+          @owner
         end
       end
 
