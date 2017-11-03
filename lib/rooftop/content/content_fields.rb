@@ -34,7 +34,13 @@ module Rooftop
             fieldset[:fields]
           end
           advanced_fields.flatten!
-          r.fields = Rooftop::Content::Collection.new((basic_fields + advanced_fields))
+          r.fields = Rooftop::Content::Collection.new((basic_fields + advanced_fields), r)
+        end
+      })
+
+      base.send(:add_to_hook, :after_initialize, ->(r) {
+        unless r.respond_to?(:fields)
+          r.fields = Rooftop::Content::Collection.new({})
         end
       })
 

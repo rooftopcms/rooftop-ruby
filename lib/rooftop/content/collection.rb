@@ -1,14 +1,16 @@
 module Rooftop
   module Content
     class Collection < ::Array
-      def initialize(content_fields)
+      attr_reader :owner
+      def initialize(content_fields, owner=nil)
+        @owner = owner
         content_fields.each do |field|
           # if the field has a 'fields' key, it is a repeater field. Collect the sub-fields and
           # set the field content to the collection of repeated fields
           if field.has_key?('fields')
             if Rooftop.configuration.advanced_options[:create_nested_content_collections]
               repeated_fields = field[:fields].collect do |repeated_fields|
-                collection = self.class.new({})
+                collection = self.class.new({}, owner)
                 repeated_fields.each {|field| collection << Rooftop::Content::Field.new(field)}
                 collection
               end
@@ -48,6 +50,28 @@ module Rooftop
       alias_method :names, :field_names
 
       def method_missing(method, *args, &block)
+        if method.to_s =~ /=$/
+          set_value(method, args, block)
+        #   set up the write
+        else
+          get_value(method, args, block)
+        end
+
+      end
+
+      def respond_to_missing?(method, private=false)
+        # TODO interrogate the schema to determine whether we should be able to write
+
+        if named(method).length == 0
+          super
+        else
+          true
+        end
+      end
+
+      private
+
+      def get_value(method, *args, &block)
         fields = named(method)
         if fields.length > 0
           if Rooftop.configuration.advanced_options[:resolve_relations]
@@ -60,13 +84,10 @@ module Rooftop
         end
       end
 
-      def respond_to_missing?(method, private=false)
-        if named(method).length == 0
-          super
-        else
-          true
-        end
+      def set_value(method, *args, &block)
+
       end
+
 
     end
   end

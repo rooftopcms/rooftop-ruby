@@ -19,6 +19,11 @@ module Rooftop
       end
     end
 
+    def advanced_fields_schema
+      # todo in due course this should return a class-level memoized attribute which interrogates the schema on the endpoint
+      super
+    end
+
   end
 
 
