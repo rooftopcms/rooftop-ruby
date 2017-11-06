@@ -12,6 +12,8 @@ module Rooftop
             if Rooftop.configuration.advanced_options[:create_nested_content_collections]
               if @schema.is_a?(Array)
                 nested_schema = @schema.find {|f| f[:name] == field['name'].to_s}[:fields] rescue nil
+              else
+                nested_schema = nil
               end
               repeated_fields = field[:fields].collect do |repeated_fields|
                 collection = self.class.new({}, self, nested_schema)
@@ -59,29 +61,45 @@ module Rooftop
       end
 
       def field_names
-        collect(&:name)
+        if root_owner.persisted? || @schema.nil?
+          collect(&:name)
+        else
+          @schema.collect {|f| f[:name]}
+        end
       end
 
       alias_method :names, :field_names
 
+      def respond_to_missing?(method, private=false)
+        if schema.nil?
+          # if there isn't a schema for this collection, we need to assume that we should only call
+          # method_missing for methods where this is a corresponding field name
+          if named(method).length > 0
+            true
+          else
+            super
+          end
+        else
+          #If there's a schema for this collection, we need to support fields which don't exist, but could.
+          if schema_includes_field?(method)
+            true
+          else
+            super
+          end
+        end
+      end
+
       def method_missing(method, *args, &block)
-        if method.to_s =~ /=$/
-          set_value(method, args, block)
-        #   set up the write
+        if Rooftop.configuration.advanced_options[:use_advanced_fields_schema]
+          if root_owner.class.write_advanced_fields? && method.to_s =~ /=$/ && schema_includes_field?(method)
+            set_value(method, args, block)
+          else
+            get_value(method, args, block)
+          end
         else
           get_value(method, args, block)
         end
 
-      end
-
-      def respond_to_missing?(method, private=false)
-        # TODO interrogate the schema to determine whether we should be able to write
-
-        if named(method).length == 0
-          super
-        else
-          true
-        end
       end
 
       private
@@ -100,9 +118,13 @@ module Rooftop
       end
 
       def set_value(method, *args, &block)
-
+        puts "this is where we'd set the value"
       end
 
+      def schema_includes_field?(method)
+        method = method.to_s
+        @schema.find {|field| field[:name] == method || field[:name] == method.gsub('=','')}
+      end
 
     end
   end
