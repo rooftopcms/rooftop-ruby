@@ -34,14 +34,14 @@ module Rooftop
             fieldset[:fields]
           end
           advanced_fields.flatten!
-          schema = r.class.write_advanced_fields ? r.advanced_fields : nil
+          schema = Rooftop.configuration.advanced_options[:use_advanced_fields_schema] ? r.advanced_fields : nil
           r.fields = Rooftop::Content::Collection.new((basic_fields + advanced_fields), r, schema)
         end
       })
 
       base.send(:add_to_hook, :after_initialize, ->(r) {
-        unless r.respond_to?(:fields)
-          r.fields = Rooftop::Content::Collection.new({})
+        if r.class.write_advanced_fields && Rooftop.configuration.advanced_options[:use_advanced_fields_schema]
+          r.fields = Rooftop::Content::Collection.new({}, r, r.advanced_fields)
         end
       })
 
