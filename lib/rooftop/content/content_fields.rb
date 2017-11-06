@@ -34,7 +34,8 @@ module Rooftop
             fieldset[:fields]
           end
           advanced_fields.flatten!
-          r.fields = Rooftop::Content::Collection.new((basic_fields + advanced_fields), r)
+          schema = r.class.write_advanced_fields ? r.advanced_fields : nil
+          r.fields = Rooftop::Content::Collection.new((basic_fields + advanced_fields), r, schema)
         end
       })
 

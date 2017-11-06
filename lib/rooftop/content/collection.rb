@@ -1,16 +1,20 @@
 module Rooftop
   module Content
     class Collection < ::Array
-      attr_reader :owner
-      def initialize(content_fields, owner=nil)
+      attr_reader :owner, :schema
+      def initialize(content_fields, owner=nil, schema=nil)
         @owner = owner
+        @schema = schema
         content_fields.each do |field|
           # if the field has a 'fields' key, it is a repeater field. Collect the sub-fields and
           # set the field content to the collection of repeated fields
           if field.has_key?('fields')
             if Rooftop.configuration.advanced_options[:create_nested_content_collections]
+              if @schema.is_a?(Array)
+                nested_schema = @schema.find {|f| f[:name] == field['name'].to_s}[:fields] rescue nil
+              end
               repeated_fields = field[:fields].collect do |repeated_fields|
-                collection = self.class.new({}, self)
+                collection = self.class.new({}, self, nested_schema)
                 repeated_fields.each {|field| collection << Rooftop::Content::Field.new(field)}
                 collection
               end
