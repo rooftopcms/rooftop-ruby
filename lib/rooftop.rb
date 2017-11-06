@@ -54,7 +54,8 @@ module Rooftop
       @connection ||= Her::API.new
       @advanced_options = {
         create_nested_content_collections: true,
-        resolve_relations: true
+        resolve_relations: true,
+        use_advanced_fields_schema: true
       }
       @api_path = "/wp-json/"
       @user_agent = "Rooftop CMS Ruby client #{Rooftop::VERSION} (http://github.com/rooftopcms/rooftop-ruby)"

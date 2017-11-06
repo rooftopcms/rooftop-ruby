@@ -6,7 +6,8 @@ module Rooftop
       base.include Rooftop::Base
       base.include Rooftop::Nested
       base.include Rooftop::Preview
-      base.include Rooftop::WriteableAdvancedFields
+      base.include Rooftop::AdvancedFields::Schema
+      base.include Rooftop::AdvancedFields::Writeable
       base.extend ClassMethods
     end
 
