@@ -24,6 +24,13 @@ module Rooftop
 
       end
 
+      def write_advanced_fields
+        self.class.write_advanced_fields
+      end
+
+      alias :write_advanced_fields? :write_advanced_fields
+
+
 
     end
   end
