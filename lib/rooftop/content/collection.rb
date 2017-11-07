@@ -5,36 +5,39 @@ module Rooftop
       def initialize(content_fields, owner=nil, schema=nil)
         @owner = owner
         @schema = schema
-        content_fields.each do |field|
+        content_fields = content_fields.to_a
+        # get the missing fields from the schema, so we can stub out all fields.
+        missing_fields = schema.inject([]) do |array, schema_field|
+          next array if content_fields.find {|f| f[:name] == schema_field[:name]}
+          array << schema_field
+        end
+        (content_fields + missing_fields).each do |field|
           # if the field has a 'fields' key, it is a repeater field. Collect the sub-fields and
           # set the field content to the collection of repeated fields
           if field.has_key?('fields')
+            if @schema.is_a?(Array)
+              nested_schema = @schema.find {|f| f[:name] == field['name'].to_s}[:fields] rescue nil
+            else
+              nested_schema = nil
+            end
             if Rooftop.configuration.advanced_options[:create_nested_content_collections]
-              if @schema.is_a?(Array)
-                nested_schema = @schema.find {|f| f[:name] == field['name'].to_s}[:fields] rescue nil
-              else
-                nested_schema = nil
-              end
               repeated_fields = field[:fields].collect do |repeated_fields|
                 collection = self.class.new({}, self, nested_schema)
                 repeated_fields.each {|field| collection << Rooftop::Content::Field.new(field)}
                 collection
               end
-
-              field.delete(:fields)
-              field[:value] = repeated_fields
             else
               repeated_fields = field[:fields].collect do |repeated_fields|
                 repeated_fields.collect{|field| Rooftop::Content::Field.new(field)}
               end
-
-              field.delete(:fields)
-              field[:value] = repeated_fields
             end
+            field.delete(:fields)
+            field[:value] = repeated_fields
           end
 
           self << Rooftop::Content::Field.new(field)
         end
+
       end
 
       # When setting up a content collection, we pass in the owner of the collection.

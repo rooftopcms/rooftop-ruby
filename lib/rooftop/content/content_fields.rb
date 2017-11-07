@@ -40,7 +40,7 @@ module Rooftop
       })
 
       base.send(:add_to_hook, :after_initialize, ->(r) {
-        if r.class.write_advanced_fields && Rooftop.configuration.advanced_options[:use_advanced_fields_schema]
+        if r.class.write_advanced_fields? && Rooftop.configuration.advanced_options[:use_advanced_fields_schema]
           r.fields = Rooftop::Content::Collection.new({}, r, r.advanced_fields)
         end
       })
