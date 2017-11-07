@@ -5,7 +5,6 @@ module Rooftop
       def self.included(base)
         base.extend ClassMethods
 
-        base.reload_advanced_fields_schema! if Rooftop.configuration.advanced_options[:use_advanced_fields_schema]
       end
 
       module ClassMethods
