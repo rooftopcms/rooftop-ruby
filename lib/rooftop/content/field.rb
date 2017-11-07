@@ -1,12 +1,31 @@
 module Rooftop
   module Content
-    class Field < ::OpenStruct
+    class Field
+      include ActiveModel::Dirty
+      OpenStruct
 
-      def initialize(hash=nil)
+      attr_reader :value
+      define_attribute_methods :value
+
+      def initialize(hash={})
         if hash.has_key?(:class)
-          hash[:type] = hash[:class]
+          hash[:type] = hash.delete(:class)
         end
-        super
+        hash.each do |k,v|
+          instance_variable_set("@#{k}", v)
+          self.class.send(:attr_accessor, k.to_sym) unless k.to_sym == :value # we set value in a method, no need for the accessor
+        end
+      end
+
+      def attributes
+        instance_values.with_indifferent_access
+      end
+
+      alias :to_h :attributes
+
+      def value=(new_value)
+        value_will_change!
+        @value = new_value
       end
 
       def resolve
@@ -21,15 +40,7 @@ module Rooftop
             end
             klass = Rooftop.configuration.post_type_mapping[relationship[:class].to_sym] || relationship[:class].to_s.classify.constantize
             resolved = klass.where(id: related_ids, order_by: :post__in).to_a
-            # there might be an empty array if all the related_ids resolve to posts which are in draft but we don't
-            # have Rooftop.include_drafts set to true. If this is the case, we should return nil
-            if resolved.length == 0
-              nil
-            elsif resolved.length == 1
-              resolved.first
-            else
-              resolved
-            end
+
           rescue
             nil
           end

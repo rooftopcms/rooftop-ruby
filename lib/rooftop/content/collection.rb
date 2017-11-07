@@ -95,35 +95,42 @@ module Rooftop
       def method_missing(method, *args, &block)
         if Rooftop.configuration.advanced_options[:use_advanced_fields_schema]
           if root_owner.class.write_advanced_fields? && method.to_s =~ /=$/ && schema_includes_field?(method)
-            set_value(method, args, block)
+            set_value(method, args)
           elsif method.to_s =~ /=$/
-            raise Rooftop::AdvancedFields::NotWriteableError, "Advanced fields aren't writeable on #{self.root_owner.class}. Set #{self.root_owner.class}.write_advanced_fields = true."
+            raise Rooftop::AdvancedFields::NotWriteableError, "Advanced fields aren't writeable on #{self.root_owner.class} or field doesn't exist"
           else
-            get_value(method, args, block)
+            get_value(method, args)
           end
         else
-          get_value(method, args, block)
+          get_value(method, args)
         end
 
       end
 
       private
 
-      def get_value(method, *args, &block)
+      def get_value(method, args)
         fields = named(method)
+        use_raw = args.first.is_a?(Hash) && args.first.has_key?(:raw) && args.first[:raw]
         if fields.length > 0
           if Rooftop.configuration.advanced_options[:resolve_relations]
-            fields.first.resolve
+            use_raw ? fields.first : fields.first.resolve
           else
-            fields.first.value
+            use_raw ? fields.first : fields.first.value
           end
         else
           raise Rooftop::Content::FieldNotFoundError, "No field named #{method} was found"
         end
       end
 
-      def set_value(method, *args, &block)
-        puts "this is where we'd set the value"
+      def set_value(method, args)
+        field_name = method.to_s.gsub("=","")
+        fields = named(field_name)
+        if fields.length > 0
+          fields.first.value = args.first
+        else
+          raise Rooftop::Content::FieldNotFoundError, "No field named #{method} was found"
+        end
       end
 
       def schema_includes_field?(method)
