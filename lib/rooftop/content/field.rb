@@ -87,7 +87,7 @@ module Rooftop
       private
       def relationship_value
         if type == 'relationship'
-          if value.is_a?(Array)
+          if value.is_a?(Array) && value.count
             value.collect do |relation|
               if relation.is_a?(Hash)
                 relation['ID']
@@ -96,7 +96,7 @@ module Rooftop
               end
             end
           else
-            []
+            [nil]
           end
         else
           value
@@ -106,9 +106,12 @@ module Rooftop
       def repeater_value
         if type == 'repeater'
           if value.is_a?(Array)
-            value.collect(&:to_params)
+            value.each_with_index.inject({}) do |hash, (fieldset, i)|
+              hash[i] = fieldset.to_params
+              hash
+            end
           else
-            []
+            {}
           end
         end
       end

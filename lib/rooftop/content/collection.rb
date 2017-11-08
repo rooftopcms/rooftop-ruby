@@ -133,13 +133,15 @@ module Rooftop
             end
           end
 
-          {
-            advanced: [
-              {
-                fields: changed_fields.compact
+          changed_fields.compact.each_with_index.inject({}) do |hash, (field, index)|
+            hash[index] = {
+              fields: {
+                0 => field
               }
-            ]
-          }
+            }
+            hash
+          end
+
         else
           # this is a nested content collection, so we just need to iterate over our own fields
           changed_fields = self.collect do |field|
@@ -149,7 +151,14 @@ module Rooftop
               next
             end
           end
-          changed_fields.compact
+          changed_fields.compact.each_with_index.inject({}) do |hash, (field, index)|
+            hash[index] = {
+              fields: {
+                0 => field
+              }
+            }
+            hash
+          end
         end
       end
 
