@@ -9,6 +9,9 @@ module Rooftop
         # get the missing fields from the schema, so we can stub out all fields.
         missing_fields = schema.inject([]) do |array, schema_field|
           next array if content_fields.find {|f| f[:name] == schema_field[:name]}
+          if schema_field[:type].in?(['repeater','relationship', 'taxonomy', 'user'])
+            schema_field[:value] = []
+          end
           array << schema_field
         end
         (content_fields + missing_fields).each do |field|
@@ -22,8 +25,8 @@ module Rooftop
             end
             if Rooftop.configuration.advanced_options[:create_nested_content_collections]
               repeated_fields = field[:fields].collect do |repeated_fields|
-                collection = self.class.new({}, self, nested_schema)
-                repeated_fields.each {|field| collection << Rooftop::Content::Field.new(field)}
+                collection = self.class.new(repeated_fields, self, nested_schema)
+                # repeated_fields.each {|field| collection << Rooftop::Content::Field.new(field)}
                 collection
               end
             else
@@ -71,6 +74,13 @@ module Rooftop
         end
       end
 
+      def owner_field
+        if owner.is_a?(Collection)
+          schema_field = owner.schema.find {|f| f[:fields] == schema}
+          owner.named(schema_field[:name]).first
+        end
+      end
+
       alias_method :names, :field_names
 
       def respond_to_missing?(method, private=false)
@@ -105,6 +115,42 @@ module Rooftop
           get_value(method, args)
         end
 
+      end
+
+      def <<(thing)
+        # TODO - we need to support checking whether the field already exists and overwrite it.
+        super
+      end
+
+      def to_params
+        if owner == root_owner
+          # this is a top-level collection, owned by the object. We need to build up the whole object
+          changed_fields = self.collect do |field|
+            if field.changed? || field.type == 'repeater'
+              field.to_param
+            else
+              next
+            end
+          end
+
+          {
+            advanced: [
+              {
+                fields: changed_fields.compact
+              }
+            ]
+          }
+        else
+          # this is a nested content collection, so we just need to iterate over our own fields
+          changed_fields = self.collect do |field|
+            if field.changed? || field.type == "repeater" || owner_field.try(:type) == 'repeater'
+              field.to_param
+            else
+              next
+            end
+          end
+          changed_fields.compact
+        end
       end
 
       private

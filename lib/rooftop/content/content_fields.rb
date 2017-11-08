@@ -41,12 +41,16 @@ module Rooftop
 
       base.send(:add_to_hook, :after_initialize, ->(r) {
         if r.class.write_advanced_fields? && Rooftop.configuration.advanced_options[:use_advanced_fields_schema]
-          r.fields = Rooftop::Content::Collection.new({}, r, r.advanced_fields)
+          r.fields = Rooftop::Content::Collection.new({}, r, r.advanced_fields) unless r.persisted?
         end
       })
 
       base.send(:before_save, ->(r) {
+        # if this object is allowed to write back to ACF, we need to build up the appropriate structure
+        
+
         r.restore_fields! unless r.new?
+
         #TODO we need to write these back into the actual fields.
       })
     end
@@ -62,5 +66,6 @@ module Rooftop
         has_field
       end
     end
+    
   end
 end

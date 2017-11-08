@@ -2,7 +2,6 @@ module Rooftop
   module Content
     class Field
       include ActiveModel::Dirty
-      OpenStruct
 
       attr_reader :value
       define_attribute_methods :value
@@ -49,13 +48,68 @@ module Rooftop
         end
       end
 
+      def to_param
+        case type
+          when "repeater"
+          {
+            key: key,
+            name: name,
+            label: label,
+            fields: repeater_value
+          }
 
+          when 'relationship', 'taxonomy', 'user'
+          {
+            key: key,
+            name: name,
+            label: label,
+            value: relationship_value
+          }
+
+          else
+          {
+            key: key,
+            name: name,
+            label: label,
+            value: value
+          }
+        end
+      end
 
       def to_s
         if respond_to?(:value) && value.is_a?(String)
           value
         else
           inspect
+        end
+      end
+
+      private
+      def relationship_value
+        if type == 'relationship'
+          if value.is_a?(Array)
+            value.collect do |relation|
+              if relation.is_a?(Hash)
+                relation['ID']
+              elsif relation.is_a?(Integer)
+                relation
+              end
+            end
+          else
+            []
+          end
+        else
+          value
+        end
+      end
+
+      def repeater_value
+        if type == 'repeater'
+          if value.is_a?(Array)
+            value.collect(&:to_params)
+          else
+            []
+          end
         end
       end
     end
