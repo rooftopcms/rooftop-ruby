@@ -53,24 +53,34 @@ module Rooftop
           when "repeater"
           {
             key: key,
-            name: name,
-            label: label,
+            # name: name,
+            # label: label,
             fields: repeater_value
+          }
+          when 'true_false'
+          {
+            key: key,
+            value: value ? 1 : 0
           }
 
           when 'relationship', 'taxonomy', 'user'
           {
             key: key,
-            name: name,
-            label: label,
+            # name: name,
+            # label: label,
             value: relationship_value
+          }
+          when 'text', 'textarea', 'wysiwyg', 'email', 'date_picker'
+          {
+            key: key,
+            value: value ? value : ""
           }
 
           else
           {
             key: key,
-            name: name,
-            label: label,
+            # name: name,
+            # label: label,
             value: value
           }
         end
