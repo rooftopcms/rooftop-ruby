@@ -20,6 +20,9 @@ module Rooftop
 
         def write_advanced_fields=(val)
           @write_advanced_fields = val
+          if val
+            self.method_for :update, :post
+          end
         end
 
       end
