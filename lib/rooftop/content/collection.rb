@@ -152,11 +152,7 @@ module Rooftop
             end
           end
           changed_fields.compact.each_with_index.inject({}) do |hash, (field, index)|
-            hash[index] = {
-              fields: {
-                0 => field
-              }
-            }
+            hash[index] = field
             hash
           end
         end
