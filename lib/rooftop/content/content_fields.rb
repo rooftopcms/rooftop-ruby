@@ -49,7 +49,11 @@ module Rooftop
         # if this object is allowed to write back to ACF, we need to build up the appropriate structure
         
 
-        r.restore_fields! unless r.new?
+        if r.write_advanced_fields?
+          r.content_will_change!
+          r.content[:advanced] = r.fields.to_params
+        end
+        # r.restore_fields! unless r.new?
 
         #TODO we need to write these back into the actual fields.
       })
