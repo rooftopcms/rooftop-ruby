@@ -76,7 +76,7 @@ module Rooftop
     end
 
     def stub_fields!
-      unless respond_to?(:content)
+      unless respond_to?(:content) && content.is_a?(Hash)
         self.class.send(:attr_accessor, :content)
         self.class.send(:define_attribute_method, :content)
         self.content = {"basic"=>{"content"=>"", "excerpt"=>""}, "advanced"=>[]}
