@@ -165,6 +165,35 @@ p = Page.first
 p.fields.field_names #returns an array of field names you can call
 ```
 
+### Creating nested content collections
+Prior to version 1.0, nested content fields (in an ACF repeater) would be returned as an array of Rooftop::Content::Field objects.
+
+In Version 1.0 onwards, the default is to return a Rooftop::Content::Collection for each nested field collection. __This is a breaking change__. If you want to return to the pre-1.0 functionality, you can include this in your config:
+ 
+ ```ruby
+ Rooftop.configure do |config|
+  config.advanced_options = {
+    create_nested_content_collections: false
+  }
+end
+```
+
+### Resolving ACF relations
+ACF can relate one content type to another. In the native Rooftop response, you can return either an array of IDs or an array of hashes.
+
+In some circumstances it's reasonable to use these directly, but the nested hash representing a relation won't be updated if the relation itself is updated, which can be a problem.
+ 
+From version 1.0 onwards, __the default is to resolve these relations with another API call__. If you would prefer to stick with the existing behaviour, you can do that in the advanced options at configuration time:
+
+```ruby
+Rooftop.configure do |config|
+  config.advanced_options = {
+    resolve_relations: false
+  }
+end
+
+```
+
 
 ## SSL / TLS
 Hosted Rooftop from rooftopcms.io exclusively uses ssl/tls. you need to configure the rooftop library to use ssl.

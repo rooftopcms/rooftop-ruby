@@ -34,12 +34,31 @@ module Rooftop
             fieldset[:fields]
           end
           advanced_fields.flatten!
-          r.fields = Rooftop::Content::Collection.new((basic_fields + advanced_fields))
+          schema = Rooftop.configuration.advanced_options[:use_advanced_fields_schema] ? r.advanced_fields : nil
+          r.fields = Rooftop::Content::Collection.new((basic_fields + advanced_fields), r, schema)
         end
       })
 
+      base.send(:add_to_hook, :after_initialize, ->(r) {
+        r.stub_fields! unless r.persisted?
+        if r.class.write_advanced_fields? && Rooftop.configuration.advanced_options[:use_advanced_fields_schema]
+          r.fields = Rooftop::Content::Collection.new({}, r, r.advanced_fields) unless r.persisted?
+        end
+
+      })
+
       base.send(:before_save, ->(r) {
-        r.restore_fields! unless r.new?
+        # if this object is allowed to write back to ACF, we need to build up the appropriate structure
+        
+        r.status_will_change! unless r.persisted?
+        r.slug_will_change! unless r.persisted?
+
+        if r.write_advanced_fields?
+          r.content_will_change!
+          r.content[:advanced] = r.fields.to_params
+        end
+        # r.restore_fields! unless r.new?
+
         #TODO we need to write these back into the actual fields.
       })
     end
@@ -55,5 +74,23 @@ module Rooftop
         has_field
       end
     end
+
+    def stub_fields!
+      unless respond_to?(:content) && content.is_a?(Hash)
+        self.class.send(:attr_accessor, :content)
+        self.class.send(:define_attribute_method, :content)
+        self.content = {"basic"=>{"content"=>"", "excerpt"=>""}, "advanced"=>[]}
+      end
+      unless respond_to?(:status)
+        self.class.send(:attr_accessor, :status)
+        self.class.send(:define_attribute_method, :status)
+        self.status = 'draft'
+      end
+      unless respond_to?(:slug)
+        self.class.send(:attr_accessor, :slug)
+        self.class.send(:define_attribute_method, :slug)
+      end
+    end
+    
   end
 end

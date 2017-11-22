@@ -1,32 +1,128 @@
 module Rooftop
   module Content
-    class Field < ::OpenStruct
+    class Field
+      include ActiveModel::Dirty
 
-      #todo - this would be nice to get working. For a relationship, we should be returning the object not a big hash
-      # def initialize(hash=nil)
-      #   if hash.has_key?(:type) && hash[:type] == "relationship"
-      #     related_objects = [hash[:value]].flatten
-      #     hash[:value] = related_objects.inject([]) do |array,object|
-      #       begin
-      #         klass = Rooftop.configuration.post_type_mapping[object[:post_type].to_sym] || object[:post_type].to_s.classify.constantize
-      #         array << klass.new(object).run_callbacks(:find)
-      #       rescue
-      #         array << object
-      #       end
-      #     end
-      #     super
-      #   else
-      #     super
-      #   end
-      # end
+      attr_reader :value
+      define_attribute_methods :value
 
+      def initialize(hash={})
+        if hash.has_key?(:class)
+          hash[:type] = hash.delete(:class)
+        end
+        hash.each do |k,v|
+          instance_variable_set("@#{k}", v)
+          self.class.send(:attr_accessor, k.to_sym) unless k.to_sym == :value # we set value in a method, no need for the accessor
+        end
+      end
 
+      def attributes
+        instance_values.with_indifferent_access
+      end
+
+      alias :to_h :attributes
+
+      def value=(new_value)
+        value_will_change!
+        @value = new_value
+      end
+
+      def resolve
+        if respond_to?(:type) && type == "relationship"
+          begin
+            related_ids = value.collect do |related|
+              if related.is_a?(Hash)
+                related[:ID]
+              else
+                related
+              end
+            end
+            klass = Rooftop.configuration.post_type_mapping[relationship[:class].to_sym] || relationship[:class].to_s.classify.constantize
+            resolved = klass.where(id: related_ids, order_by: :post__in).to_a
+
+          rescue
+            nil
+          end
+        else
+          value
+        end
+      end
+
+      def to_param
+        case type
+          when "repeater"
+          {
+            key: key,
+            # name: name,
+            # label: label,
+            fields: repeater_value
+          }
+          when 'true_false'
+          {
+            key: key,
+            value: value ? 1 : 0
+          }
+
+          when 'relationship', 'taxonomy', 'user'
+          {
+            key: key,
+            # name: name,
+            # label: label,
+            value: relationship_value
+          }
+          when 'text', 'textarea', 'wysiwyg', 'email', 'date_picker'
+          {
+            key: key,
+            value: value ? value : ""
+          }
+
+          else
+          {
+            key: key,
+            # name: name,
+            # label: label,
+            value: value
+          }
+        end
+      end
 
       def to_s
         if respond_to?(:value) && value.is_a?(String)
           value
         else
           inspect
+        end
+      end
+
+      private
+      def relationship_value
+        if type == 'relationship'
+          if value.is_a?(Array) && value.count
+            value.collect do |relation|
+              if relation.is_a?(Hash)
+                relation['ID']
+              elsif relation.is_a?(Integer)
+                relation
+              end
+            end
+          else
+            [nil]
+          end
+        else
+          value
+        end
+      end
+
+      def repeater_value
+        if type == 'repeater'
+          if value.is_a?(Array)
+            value.each_with_index.inject({}) do |hash, (fieldset, i)|
+              hash[i] = fieldset.to_params
+              hash
+            end
+          else
+            {}
+          end
         end
       end
     end

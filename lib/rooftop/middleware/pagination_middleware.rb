@@ -10,7 +10,7 @@ module Rooftop
           page:        header("x-wp-page").to_i || 1
       }
 
-      env[:body].merge!(pagination: pagination)
+      env[:body][:metadata].merge!(pagination: pagination)
     end
 
     private

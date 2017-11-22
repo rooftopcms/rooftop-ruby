@@ -52,7 +52,12 @@ module Rooftop
     def initialize
       @extra_headers = {}
       @connection ||= Her::API.new
-      @advanced_options = {}
+      @advanced_options = {
+        create_nested_content_collections: true,
+        resolve_relations: true,
+        use_advanced_fields_schema: true,
+        send_only_modified_attributes: true
+      }
       @api_path = "/wp-json/"
       @user_agent = "Rooftop CMS Ruby client #{Rooftop::VERSION} (http://github.com/rooftopcms/rooftop-ruby)"
       @perform_caching = false
@@ -73,7 +78,8 @@ module Rooftop
     end
 
     def advanced_options=(opts)
-      @advanced_options = opts || @advanced_options
+      opts ||= {}
+      @advanced_options.merge!(opts)
     end
 
     def user_agent=(agent)
@@ -95,7 +101,8 @@ module Rooftop
 
       @connection_path = "#{@url}#{@api_path}"
 
-      @connection.setup url: @connection_path, ssl: @ssl_options, proxy: @proxy, send_only_modified_attributes: true do |c|
+      @connection.setup url: @connection_path, ssl: @ssl_options, proxy: @proxy, send_only_modified_attributes: @advanced_options[:send_only_modified_attributes] do |c|
+        c.use Rooftop::WriteAdvancedFieldsMiddleware
         c.use Rooftop::EmbedMiddleware
 
         c.use Rooftop::PaginationMiddleware
