@@ -187,7 +187,8 @@ module Rooftop
 
       def schema_includes_field?(method)
         method = method.to_s
-        @schema.find {|field| field[:name] == method || field[:name] == method.gsub('=','')}
+        field = @schema.find {|field| field[:name] == method || field[:name] == method.gsub('=','')}
+        !field.nil? || named(method).length > 0
       end
 
     end
