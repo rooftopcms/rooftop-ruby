@@ -6,8 +6,11 @@ module Rooftop
       end
 
       Her::API.setup url: Rooftop.configuration.url do |c|
+        c.use Faraday::Multipart
+        
         #Headers
         c.use Rooftop::Headers
+
 
         # Request
         c.use Faraday::Request::UrlEncoded
