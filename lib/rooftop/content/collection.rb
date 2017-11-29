@@ -105,7 +105,7 @@ module Rooftop
 
       def method_missing(method, *args, &block)
         if Rooftop.configuration.advanced_options[:use_advanced_fields_schema]
-          if root_owner.class.write_advanced_fields? && method.to_s =~ /=$/ && schema_includes_field?(method)
+          if root_owner.class.respond_to?(:write_advanced_fields?) && root_owner.class.write_advanced_fields? && method.to_s =~ /=$/ && schema_includes_field?(method)
             set_value(method, args)
           elsif method.to_s =~ /=$/
             raise Rooftop::AdvancedFields::NotWriteableError, "Advanced fields aren't writeable on #{self.root_owner.class} or field doesn't exist"

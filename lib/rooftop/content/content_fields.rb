@@ -34,7 +34,7 @@ module Rooftop
             fieldset[:fields]
           end
           advanced_fields.flatten!
-          schema = Rooftop.configuration.advanced_options[:use_advanced_fields_schema] ? r.advanced_fields : nil
+          schema = (Rooftop.configuration.advanced_options[:use_advanced_fields_schema] && r.respond_to?(:advanced_fields)) ? r.advanced_fields : nil
           r.fields = Rooftop::Content::Collection.new((basic_fields + advanced_fields), r, schema)
         end
       })
@@ -49,7 +49,7 @@ module Rooftop
 
       base.send(:before_save, ->(r) {
         # if this object is allowed to write back to ACF, we need to build up the appropriate structure
-        if r.write_advanced_fields?
+        if r.respond_to?(:write_advanced_fields) && r.write_advanced_fields?
           r.content[:advanced] = r.fields.to_params
         end
 
