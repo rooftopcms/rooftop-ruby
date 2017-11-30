@@ -43,6 +43,7 @@ module Rooftop
   class Configuration
     attr_accessor :api_token, :url, :site_name, :perform_caching, :cache_store, :cache_logger, :ssl_options, :proxy, :post_type_mapping, :logger
     attr_reader :connection,
+                :connection_multipart, #a separate connection for multipart requests - used in Rooftop::MediaItem
                 :connection_path,
                 :api_path, #actually writeable with custom setter
                 :extra_headers, #actually writeable with custom setter
@@ -52,6 +53,7 @@ module Rooftop
     def initialize
       @extra_headers = {}
       @connection ||= Her::API.new
+      @connection_multipart ||= Her::API.new
       @advanced_options = {
         create_nested_content_collections: true,
         resolve_relations: true,
@@ -101,35 +103,48 @@ module Rooftop
 
       @connection_path = "#{@url}#{@api_path}"
 
-      @connection.setup url: @connection_path, ssl: @ssl_options, proxy: @proxy, send_only_modified_attributes: @advanced_options[:send_only_modified_attributes] do |c|
-        c.use Rooftop::WriteAdvancedFieldsMiddleware
-        c.use Rooftop::EmbedMiddleware
+      @connection.setup url: @connection_path, ssl: @ssl_options, proxy: @proxy, send_only_modified_attributes: @advanced_options[:send_only_modified_attributes] {|c| api_connection_settings(c)}
 
-        c.use Rooftop::PaginationMiddleware
+      @connection_multipart.setup url: @connection_path, ssl: @ssl_options, proxy: @proxy, send_only_modified_attributes: @advanced_options[:send_only_modified_attributes] {|c| api_connection_settings(c, multipart: true)}
+    end
+    
+    private
+    def api_connection_settings(connection, opts = {})
+
+        connection.use Rooftop::WriteAdvancedFieldsMiddleware
+        connection.use Rooftop::EmbedMiddleware
+
+        connection.use Rooftop::PaginationMiddleware
 
         if @logger
-          c.use Rooftop::DebugMiddleware
+          connection.use Rooftop::DebugMiddleware
         end
 
 
         #Headers
-        c.use Rooftop::Headers
+        connection.use Rooftop::Headers
 
         # Caching
         if @perform_caching
-          c.use Faraday::HttpCache, store: @cache_store, serializer: Marshal, logger: @cache_logger
+          connection.use Faraday::HttpCache, store: @cache_store, serializer: Marshal, logger: @cache_logger
         end
 
         # Request
-        c.use Faraday::Request::UrlEncoded
+        if opts[:multipart]
+          connection.use Faraday::Request::Multipart
+        else
+          connection.use Faraday::Request::UrlEncoded
+        end
+        
 
 
         # Response
-        c.use Her::Middleware::DefaultParseJSON
+        connection.use Her::Middleware::DefaultParseJSON
 
         # Adapter
-        c.use Faraday::Adapter::NetHttp
-      end
+        connection.use Faraday::Adapter::NetHttp
+      
+      
     end
   end
 end
