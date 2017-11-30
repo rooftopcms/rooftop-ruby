@@ -7,7 +7,7 @@ module Rooftop
       base.include Rooftop::HookCalls
       base.send(:add_to_hook, :after_find, ->(r) {
         # basic content is the stuff which comes from WP by default.
-        if r.respond_to?(:content)
+        if r.respond_to?(:content) && r.content.is_a?(Hash)
           basic_fields = r.content[:basic].collect {|k,v| {name: k, value: v, fieldset: "Basic"}}
           # advanced fields from from ACF, and are exposed in the api in this form:
           # [
@@ -56,7 +56,7 @@ module Rooftop
         r.status_will_change!# unless r.persisted?
         r.slug_will_change!# unless r.persisted?
         r.content_will_change!
-        r.restore_fields! # in any case, remove the fields attribute to nothing; we don't want to send this back.
+        # r.restore_fields! # in any case, remove the fields attribute to nothing; we don't want to send this back.
       })
     end
 
@@ -73,10 +73,11 @@ module Rooftop
     end
 
     def stub_fields!
+
       unless respond_to?(:content) && content.is_a?(Hash)
         self.class.send(:attr_accessor, :content)
         self.class.send(:define_attribute_method, :content)
-        self.content = {"basic"=>{"content"=>"", "excerpt"=>""}, "advanced"=>[]}
+        self.content = {"basic"=>{"content"=>"", "excerpt"=>""}, "advanced"=>[]}.with_indifferent_access
       end
       unless respond_to?(:status)
         self.class.send(:attr_accessor, :status)
@@ -84,6 +85,10 @@ module Rooftop
         self.status = 'draft'
       end
       unless respond_to?(:slug)
+        self.class.send(:attr_accessor, :slug)
+        self.class.send(:define_attribute_method, :slug)
+      end
+      unless respond_to?(:title)
         self.class.send(:attr_accessor, :slug)
         self.class.send(:define_attribute_method, :slug)
       end
