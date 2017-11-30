@@ -25,5 +25,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "require_all", "~> 1.3"
   spec.add_dependency "her", "~> 1.1"
   spec.add_dependency "faraday-http-cache", "~> 1.2"
+  spec.add_dependency "mime-types", "~> 3"
+
 
 end
