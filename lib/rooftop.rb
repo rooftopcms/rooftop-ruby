@@ -1,5 +1,6 @@
 require 'her'
 require 'faraday-http-cache'
+require 'mime-types'
 require 'require_all'
 require "active_support/all"
 
