@@ -68,7 +68,7 @@ module Rooftop
       end
 
       def field_names
-        if root_owner.persisted? || @schema.nil?
+        if (root_owner.present? && root_owner.persisted?) || @schema.nil?
           collect(&:name)
         else
           @schema.collect {|f| f[:name]}
