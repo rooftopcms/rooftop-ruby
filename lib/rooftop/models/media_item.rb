@@ -7,7 +7,7 @@ module Rooftop
     define_attribute_method :file
 
     after_find ->(r) {
-      r.caption = r.caption[:raw]
+      r.caption = r.caption[:raw] if r.caption.is_a?(Hash)
     }
 
     def save
@@ -51,11 +51,14 @@ module Rooftop
       if persisted?
         raise NotImplementedError, "You can't replace a file at the moment. Delete and recreate."
       end
-      unless file.is_a?(String) || file.is_a?(File)
-        raise Rooftop::UnknownFileTypeError, "the file attribute should either be a File object or a string path to the file"
-      end
 
-      @file = File.open(file, 'rb') if file.is_a?(String)
+
+      if file.is_a?(String)
+        @file = File.open(file, 'rb')
+      else
+        @file = file
+      end
+      
       @file_name ||= File.basename(@file.path)
       @mime_type ||= MIME::Types.type_for(File.extname(@file_name)).first
       @content_disposition ||= "attachment; filename=#{@file_name}"
