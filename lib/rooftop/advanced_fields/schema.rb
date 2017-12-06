@@ -28,7 +28,7 @@ module Rooftop
           # default to nil if there's no advanced fields schema. This will be the case for taxonomies,
           # which in all other respects can be treated like posts in our response handling.
           if options_data.is_a?(Hash)
-            options_data.try(:[],:schema).try(:[],:properties).try(:[],:advanced_fields_schema)
+            options_data.try(:[],:schema).try(:[],:properties).try(:[],:advanced_fields_schema).try(:compact)
           end
 
           # return nil implied here, which leaves advanced_fields_schema as nil
