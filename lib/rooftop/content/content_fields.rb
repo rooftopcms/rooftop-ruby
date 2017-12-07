@@ -56,7 +56,7 @@ module Rooftop
         r.status_will_change!# unless r.persisted?
         r.slug_will_change!# unless r.persisted?
         r.content_will_change!
-        # r.restore_fields! # in any case, remove the fields attribute to nothing; we don't want to send this back.
+        r.restore_fields! # in any case, remove the fields attribute to nothing; we don't want to send this back.
       })
     end
 
