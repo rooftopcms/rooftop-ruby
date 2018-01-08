@@ -108,7 +108,7 @@ module Rooftop
           if root_owner.class.respond_to?(:write_advanced_fields?) && root_owner.class.write_advanced_fields? && method.to_s =~ /=$/ && schema_includes_field?(method)
             set_value(method, args)
           elsif method.to_s =~ /=$/
-            raise Rooftop::AdvancedFields::NotWriteableError, "Advanced fields aren't writeable on #{self.root_owner.class} or field doesn't exist"
+            raise Rooftop::AdvancedFields::NotWriteableError, "Either the field #{method.to_s.gsub('=','')} doesn't exist, or advanced fields aren't writeable on #{self.root_owner.class}"
           else
             get_value(method, args)
           end
