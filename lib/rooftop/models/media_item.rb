@@ -30,7 +30,7 @@ module Rooftop
           response = self.class.put_raw(self.class.collection_path + "/#{self.id}", attributes)
           self.assign_attributes(response[:parsed_data][:data].with_indifferent_access)
           self.run_callbacks(:find)
-          self.changed_attributes.clear
+          # self.changed_attributes.clear
           self
         else
           super
@@ -40,7 +40,7 @@ module Rooftop
         response = self.class.post_raw(self.class.collection_path, attributes)
         self.assign_attributes(response[:parsed_data][:data].with_indifferent_access)
         self.run_callbacks(:find)
-        self.changed_attributes.clear
+        # self.changed_attributes.clear
         self
 
       end
