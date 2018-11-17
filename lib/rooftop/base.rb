@@ -16,7 +16,7 @@ module Rooftop
       # Aliases allow you to specify a field (or fields) to alias
       base.include Rooftop::FieldAliases
       # Queries mixin includes a fixup for there `where()` method
-      base.include Rooftop::Queries
+      base.include Rooftop::PaginatedFinders
       # Links mixin handles the _links key in a response
       base.include Rooftop::ResourceLinks
 

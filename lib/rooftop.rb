@@ -143,3 +143,5 @@ end
 
 #load everything after this.
 require_rel '.'
+
+Her::Model::Relation.prepend(Rooftop::Queries)
