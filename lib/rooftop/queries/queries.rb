@@ -8,7 +8,10 @@ module Rooftop
     end
 
     def fetch
-      @params = mutate_params(@params)
+      if @parent.ancestors.include?(Rooftop::Base)
+        @params = mutate_params(@params)
+      end
+
       super
     end
 
