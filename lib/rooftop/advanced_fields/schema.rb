@@ -15,7 +15,7 @@ module Rooftop
         end
 
         def advanced_fields
-          if write_advanced_fields && advanced_fields_schema
+          if advanced_fields_schema
             advanced_fields_schema.collect {|fieldset| fieldset[:fields].collect {|field| field.merge!(fieldset: fieldset[:title])}}.flatten
           else
             []
