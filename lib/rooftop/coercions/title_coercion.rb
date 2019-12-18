@@ -21,7 +21,7 @@ module Rooftop
 
       def coerce_title_to_string
         record = self
-        if record.respond_to?(:title) && record.title.is_a?(ActiveSupport::HashWithIndifferentAccess)
+        if record.respond_to?(:title) && (record.title.class.ancestors.include?(Hash))
           record.title_object = record.title
           record.title = record.title[:rendered]
         end
