@@ -11,13 +11,17 @@ module Rooftop
 
       # Add the call to the :after_find hook to the list of hook calls, to be processed later.
       # This is where we iterate over our previously established list of field aliases.
-      base.send(:add_to_hook, :after_find, ->(r){
-        r.field_aliases.each do |old, new|
-          if r.respond_to?(old)
-            r.send("#{new}=",r.send(old))
+      #
+      [:after_find, :after_save].each do |hook|
+        base.send(hook, ->(r){
+          r.field_aliases.each do |old, new|
+            if r.respond_to?(old)
+              r.send("#{new}=",r.send(old))
+            end
           end
-        end
-      })
+        })
+      end
+
 
       base.send(:before_save, ->(r) {
         r.field_aliases.each do |old,new|
