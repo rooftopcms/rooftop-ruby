@@ -7,7 +7,8 @@ module Rooftop
         @schema = schema
         content_fields = content_fields.to_a
         # get the missing fields from the schema, so we can stub out all fields.
-        missing_fields = schema.inject([]) do |array, schema_field|
+        # If there's no schema, missing fields is an empty array.
+        missing_fields = (schema || {}).inject([]) do |array, schema_field|
           next array if content_fields.find {|f| f[:name] == schema_field[:name]}
           if schema_field[:type].in?(['repeater','relationship', 'taxonomy', 'user'])
             schema_field[:value] = []
